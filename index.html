@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ecom Daily P&amp;L</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#161a21; --panel2:#1d222b; --line:#262c38;
+    --text:#e6e8ec; --muted:#9aa3b2; --accent:#4ade80; --bad:#f87171;
+    --warn:#fbbf24; --blue:#60a5fa;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.45 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  header{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+  h1{margin:0;font-size:18px;font-weight:600}
+  .sub{color:var(--muted);font-size:12px}
+  main{display:grid;grid-template-columns:minmax(320px,420px) 1fr;gap:20px;padding:20px;max-width:1400px;margin:0 auto}
+  @media (max-width:900px){main{grid-template-columns:1fr}}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+  .panel h2{margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+  .row{display:grid;grid-template-columns:1fr 130px;gap:8px;align-items:center;margin-bottom:8px}
+  .row label{font-size:13px;color:var(--text)}
+  .row small{display:block;color:var(--muted);font-size:11px}
+  .row input{width:100%;padding:7px 9px;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:6px;text-align:right;font-variant-numeric:tabular-nums}
+  .row input:focus{outline:none;border-color:var(--blue)}
+  .group{margin-bottom:16px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+  @media (max-width:700px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
+  .kpi .label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+  .kpi .val{font-size:22px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums}
+  .kpi .sub2{font-size:11px;color:var(--muted);margin-top:2px}
+  .good{color:var(--accent)} .bad{color:var(--bad)} .warn{color:var(--warn)}
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  th,td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--line);font-size:13px}
+  th:first-child,td:first-child{text-align:left}
+  th{color:var(--muted);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+  .pnl td:first-child{color:var(--muted)}
+  .pnl tr.total td{font-weight:600;color:var(--text);border-top:1px solid var(--line);border-bottom:none}
+  .btn{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:7px 12px;border-radius:6px;cursor:pointer;font-size:13px}
+  .btn:hover{border-color:var(--blue)}
+  .btn.primary{background:var(--blue);color:#0b1220;border-color:var(--blue);font-weight:600}
+  .btn.danger:hover{border-color:var(--bad);color:var(--bad)}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .date-input{padding:7px 9px;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:6px}
+  .log-actions button{padding:4px 8px;font-size:12px}
+  .empty{color:var(--muted);font-style:italic;text-align:center;padding:20px}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Ecom Daily P&amp;L</h1>
+    <div class="sub">Plug-and-play net margin tracker. Values auto-save locally.</div>
+  </div>
+  <div class="toolbar">
+    <input type="date" id="entryDate" class="date-input" />
+    <button class="btn primary" id="saveDay">Save Day</button>
+    <button class="btn" id="exportCsv">Export CSV</button>
+    <button class="btn" id="exportJson">Export JSON</button>
+    <button class="btn" id="importBtn">Import JSON</button>
+    <input type="file" id="importFile" accept="application/json" hidden />
+  </div>
+</header>
+
+<main>
+  <section class="panel" id="inputs">
+    <div class="group">
+      <h2>Revenue</h2>
+      <div class="row"><label>Units sold <small>total products shipped today</small></label><input type="number" id="units" step="any" /></div>
+      <div class="row"><label>Avg sell price <small>per unit, pre-discount</small></label><input type="number" id="price" step="any" /></div>
+      <div class="row"><label>Discount % <small>blended across orders</small></label><input type="number" id="discount" step="any" /></div>
+      <div class="row"><label>Shipping charged <small>collected from customer, total</small></label><input type="number" id="shipRev" step="any" /></div>
+      <div class="row"><label>Refund rate % <small>of gross revenue</small></label><input type="number" id="refundRate" step="any" /></div>
+    </div>
+
+    <div class="group">
+      <h2>COGS &amp; Fulfillment</h2>
+      <div class="row"><label>Product cost / unit <small>landed cost</small></label><input type="number" id="cogs" step="any" /></div>
+      <div class="row"><label>Packaging / unit</label><input type="number" id="packaging" step="any" /></div>
+      <div class="row"><label>Outbound shipping / order <small>what you pay carrier</small></label><input type="number" id="shipCost" step="any" /></div>
+      <div class="row"><label>Orders <small>used for per-order costs</small></label><input type="number" id="orders" step="any" /></div>
+    </div>
+
+    <div class="group">
+      <h2>Ad Spend</h2>
+      <div class="row"><label>Meta / Facebook</label><input type="number" id="adMeta" step="any" /></div>
+      <div class="row"><label>Google</label><input type="number" id="adGoogle" step="any" /></div>
+      <div class="row"><label>TikTok</label><input type="number" id="adTiktok" step="any" /></div>
+      <div class="row"><label>Other / influencer</label><input type="number" id="adOther" step="any" /></div>
+    </div>
+
+    <div class="group">
+      <h2>Fees</h2>
+      <div class="row"><label>Payment processor % <small>e.g. Stripe 2.9</small></label><input type="number" id="procPct" step="any" /></div>
+      <div class="row"><label>Payment processor fixed / order <small>e.g. 0.30</small></label><input type="number" id="procFixed" step="any" /></div>
+      <div class="row"><label>Platform fee % <small>Shopify/Amazon referral, etc.</small></label><input type="number" id="platformPct" step="any" /></div>
+      <div class="row"><label>Chargeback / fraud %</label><input type="number" id="chargeback" step="any" /></div>
+    </div>
+
+    <div class="group">
+      <h2>Fixed Overhead (per day)</h2>
+      <div class="row"><label>Software / apps</label><input type="number" id="ovSoftware" step="any" /></div>
+      <div class="row"><label>Salary / contractor</label><input type="number" id="ovSalary" step="any" /></div>
+      <div class="row"><label>Other</label><input type="number" id="ovOther" step="any" /></div>
+    </div>
+
+    <div class="group">
+      <h2>Tax</h2>
+      <div class="row"><label>Income tax % <small>applied to net before tax</small></label><input type="number" id="taxPct" step="any" /></div>
+    </div>
+
+    <button class="btn danger" id="resetBtn">Reset all inputs</button>
+  </section>
+
+  <section>
+    <div class="kpis">
+      <div class="kpi"><div class="label">Net Revenue</div><div class="val" id="kRev">$0</div><div class="sub2" id="kRevSub">after refunds</div></div>
+      <div class="kpi"><div class="label">Gross Margin</div><div class="val" id="kGm">0%</div><div class="sub2" id="kGmSub">$0</div></div>
+      <div class="kpi"><div class="label">Net Profit</div><div class="val" id="kNet">$0</div><div class="sub2" id="kNetSub">after all costs &amp; tax</div></div>
+      <div class="kpi"><div class="label">Net Margin</div><div class="val" id="kNm">0%</div><div class="sub2" id="kNmSub">of net revenue</div></div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="label">AOV</div><div class="val" id="kAov">$0</div><div class="sub2">per order</div></div>
+      <div class="kpi"><div class="label">CAC</div><div class="val" id="kCac">$0</div><div class="sub2">ad spend / order</div></div>
+      <div class="kpi"><div class="label">ROAS</div><div class="val" id="kRoas">0.00</div><div class="sub2">revenue / ad spend</div></div>
+      <div class="kpi"><div class="label">Break-even ROAS</div><div class="val" id="kBer">0.00</div><div class="sub2">target floor</div></div>
+    </div>
+
+    <div class="panel" style="margin-bottom:20px">
+      <h2>P&amp;L Breakdown</h2>
+      <table class="pnl">
+        <tbody id="pnlBody"></tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h2>Saved Days</h2>
+      <table id="logTable">
+        <thead>
+          <tr><th>Date</th><th>Revenue</th><th>Ad Spend</th><th>Net Profit</th><th>Net Margin</th><th>ROAS</th><th></th></tr>
+        </thead>
+        <tbody id="logBody"><tr><td colspan="7" class="empty">No saved days yet. Fill inputs, then "Save Day".</td></tr></tbody>
+        <tfoot id="logFoot"></tfoot>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script>
+const FIELDS = ['units','price','discount','shipRev','refundRate','cogs','packaging','shipCost','orders',
+  'adMeta','adGoogle','adTiktok','adOther','procPct','procFixed','platformPct','chargeback',
+  'ovSoftware','ovSalary','ovOther','taxPct'];
+
+const DEFAULTS = { procPct:2.9, procFixed:0.30, taxPct:0 };
+const STORAGE_KEY = 'ecom_pnl_inputs_v1';
+const LOG_KEY = 'ecom_pnl_log_v1';
+
+const $ = id => document.getElementById(id);
+const num = id => parseFloat($(id).value) || 0;
+const fmt$ = n => (n<0?'-$':'$') + Math.abs(n).toLocaleString(undefined,{maximumFractionDigits:2,minimumFractionDigits:2});
+const fmtPct = n => (isFinite(n)?n.toFixed(1):'0.0') + '%';
+const fmtX = n => (isFinite(n)?n.toFixed(2):'0.00');
+
+function compute(){
+  const v = Object.fromEntries(FIELDS.map(f=>[f,num(f)]));
+  const grossRev = v.units * v.price;
+  const discountAmt = grossRev * (v.discount/100);
+  const netSales = grossRev - discountAmt;
+  const refunds = netSales * (v.refundRate/100);
+  const chargebacks = netSales * (v.chargeback/100);
+  const netRevenue = netSales - refunds - chargebacks + v.shipRev;
+
+  const productCost = v.units * v.cogs;
+  const packagingCost = v.units * v.packaging;
+  const shippingCost = v.orders * v.shipCost;
+  const cogsTotal = productCost + packagingCost + shippingCost;
+  const grossProfit = netRevenue - cogsTotal;
+
+  const adSpend = v.adMeta + v.adGoogle + v.adTiktok + v.adOther;
+
+  const processorPct = netRevenue * (v.procPct/100);
+  const processorFixed = v.orders * v.procFixed;
+  const platformFee = netRevenue * (v.platformPct/100);
+  const feesTotal = processorPct + processorFixed + platformFee;
+
+  const overhead = v.ovSoftware + v.ovSalary + v.ovOther;
+
+  const netBeforeTax = grossProfit - adSpend - feesTotal - overhead;
+  const tax = netBeforeTax > 0 ? netBeforeTax * (v.taxPct/100) : 0;
+  const netProfit = netBeforeTax - tax;
+
+  const aov = v.orders ? netRevenue / v.orders : 0;
+  const cac = v.orders ? adSpend / v.orders : 0;
+  const roas = adSpend ? netRevenue / adSpend : 0;
+  // break-even ROAS: ad spend at which net profit = 0, holding everything else
+  // adSpend_be = grossProfit - feesTotal - overhead - tax(if positive)
+  // Simplify ignoring tax (tax is zero at break-even by definition)
+  const beAdSpend = grossProfit - feesTotal - overhead;
+  const beRoas = beAdSpend > 0 ? netRevenue / beAdSpend : 0;
+
+  const gm = netRevenue ? (grossProfit/netRevenue)*100 : 0;
+  const nm = netRevenue ? (netProfit/netRevenue)*100 : 0;
+
+  return {grossRev,discountAmt,netSales,refunds,chargebacks,netRevenue,
+    productCost,packagingCost,shippingCost,cogsTotal,grossProfit,
+    adSpend,processorPct,processorFixed,platformFee,feesTotal,
+    overhead,netBeforeTax,tax,netProfit,
+    aov,cac,roas,beRoas,gm,nm};
+}
+
+function render(){
+  const r = compute();
+  $('kRev').textContent = fmt$(r.netRevenue);
+  $('kGm').textContent = fmtPct(r.gm);
+  $('kGm').className = 'val ' + (r.gm>=40?'good':r.gm>=20?'warn':'bad');
+  $('kGmSub').textContent = fmt$(r.grossProfit);
+  $('kNet').textContent = fmt$(r.netProfit);
+  $('kNet').className = 'val ' + (r.netProfit>0?'good':'bad');
+  $('kNm').textContent = fmtPct(r.nm);
+  $('kNm').className = 'val ' + (r.nm>=15?'good':r.nm>=5?'warn':'bad');
+  $('kAov').textContent = fmt$(r.aov);
+  $('kCac').textContent = fmt$(r.cac);
+  $('kRoas').textContent = fmtX(r.roas);
+  $('kRoas').className = 'val ' + (r.roas>=r.beRoas && r.beRoas>0?'good':'bad');
+  $('kBer').textContent = fmtX(r.beRoas);
+
+  const rows = [
+    ['Gross revenue', r.grossRev],
+    ['Discounts', -r.discountAmt],
+    ['Refunds', -r.refunds],
+    ['Chargebacks', -r.chargebacks],
+    ['Shipping income', r.shipRev],
+    ['Net revenue', r.netRevenue, 'total'],
+    ['Product cost', -r.productCost],
+    ['Packaging', -r.packagingCost],
+    ['Outbound shipping', -r.shippingCost],
+    ['Gross profit', r.grossProfit, 'total'],
+    ['Ad spend', -r.adSpend],
+    ['Processor % fee', -r.processorPct],
+    ['Processor fixed fee', -r.processorFixed],
+    ['Platform fee', -r.platformFee],
+    ['Overhead', -r.overhead],
+    ['Net profit before tax', r.netBeforeTax, 'total'],
+    ['Income tax', -r.tax],
+    ['Net profit', r.netProfit, 'total'],
+  ];
+  $('pnlBody').innerHTML = rows.map(([label,val,cls])=>{
+    const color = (cls==='total') ? (val>=0?'good':'bad') : '';
+    return `<tr class="${cls||''}"><td>${label}</td><td class="${color}">${fmt$(val)}</td></tr>`;
+  }).join('');
+}
+
+function saveInputs(){
+  const data = Object.fromEntries(FIELDS.map(f=>[f,$(f).value]));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+function loadInputs(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  const data = raw ? JSON.parse(raw) : {};
+  FIELDS.forEach(f=>{
+    if(data[f]!==undefined && data[f]!=='') $(f).value = data[f];
+    else if(DEFAULTS[f]!==undefined) $(f).value = DEFAULTS[f];
+  });
+}
+function resetInputs(){
+  if(!confirm('Clear all input fields?')) return;
+  FIELDS.forEach(f=>$(f).value='');
+  Object.entries(DEFAULTS).forEach(([k,v])=>$(k).value=v);
+  saveInputs(); render();
+}
+
+function loadLog(){ return JSON.parse(localStorage.getItem(LOG_KEY) || '[]'); }
+function writeLog(log){ localStorage.setItem(LOG_KEY, JSON.stringify(log)); }
+
+function saveDay(){
+  const date = $('entryDate').value;
+  if(!date){ alert('Pick a date first.'); return; }
+  const r = compute();
+  const inputs = Object.fromEntries(FIELDS.map(f=>[f,num(f)]));
+  const log = loadLog().filter(e=>e.date!==date);
+  log.push({date, inputs, result:{
+    netRevenue:r.netRevenue, adSpend:r.adSpend, netProfit:r.netProfit,
+    nm:r.nm, roas:r.roas, grossProfit:r.grossProfit
+  }});
+  log.sort((a,b)=>a.date.localeCompare(b.date));
+  writeLog(log);
+  renderLog();
+}
+
+function deleteDay(date){
+  if(!confirm('Delete entry for '+date+'?')) return;
+  writeLog(loadLog().filter(e=>e.date!==date));
+  renderLog();
+}
+
+function loadDay(date){
+  const e = loadLog().find(x=>x.date===date);
+  if(!e) return;
+  FIELDS.forEach(f=>$(f).value = e.inputs[f] ?? '');
+  $('entryDate').value = date;
+  saveInputs(); render();
+}
+
+function renderLog(){
+  const log = loadLog();
+  const body = $('logBody');
+  if(!log.length){
+    body.innerHTML = '<tr><td colspan="7" class="empty">No saved days yet. Fill inputs, then "Save Day".</td></tr>';
+    $('logFoot').innerHTML = '';
+    return;
+  }
+  body.innerHTML = log.map(e=>{
+    const cls = e.result.netProfit>=0?'good':'bad';
+    return `<tr>
+      <td><a href="#" data-load="${e.date}" style="color:var(--blue);text-decoration:none">${e.date}</a></td>
+      <td>${fmt$(e.result.netRevenue)}</td>
+      <td>${fmt$(e.result.adSpend)}</td>
+      <td class="${cls}">${fmt$(e.result.netProfit)}</td>
+      <td class="${cls}">${fmtPct(e.result.nm)}</td>
+      <td>${fmtX(e.result.roas)}</td>
+      <td class="log-actions"><button class="btn danger" data-del="${e.date}">×</button></td>
+    </tr>`;
+  }).join('');
+  const tot = log.reduce((a,e)=>({rev:a.rev+e.result.netRevenue,ad:a.ad+e.result.adSpend,np:a.np+e.result.netProfit}),{rev:0,ad:0,np:0});
+  const tnm = tot.rev?(tot.np/tot.rev)*100:0;
+  const troas = tot.ad?tot.rev/tot.ad:0;
+  $('logFoot').innerHTML = `<tr class="total"><th>Total (${log.length}d)</th><th>${fmt$(tot.rev)}</th><th>${fmt$(tot.ad)}</th><th class="${tot.np>=0?'good':'bad'}">${fmt$(tot.np)}</th><th>${fmtPct(tnm)}</th><th>${fmtX(troas)}</th><th></th></tr>`;
+  body.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>deleteDay(b.dataset.del));
+  body.querySelectorAll('[data-load]').forEach(a=>a.onclick=e=>{e.preventDefault();loadDay(a.dataset.load)});
+}
+
+function exportCsv(){
+  const log = loadLog();
+  if(!log.length){ alert('No saved days.'); return; }
+  const cols = ['date',...FIELDS,'netRevenue','adSpend','grossProfit','netProfit','netMarginPct','roas'];
+  const rows = [cols.join(',')];
+  log.forEach(e=>{
+    const r = e.result;
+    const row = [e.date, ...FIELDS.map(f=>e.inputs[f]??0),
+      r.netRevenue.toFixed(2), r.adSpend.toFixed(2), r.grossProfit.toFixed(2),
+      r.netProfit.toFixed(2), r.nm.toFixed(2), r.roas.toFixed(2)];
+    rows.push(row.join(','));
+  });
+  download('pnl-log.csv', rows.join('\n'), 'text/csv');
+}
+function exportJson(){
+  const data = {inputs:JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'), log:loadLog()};
+  download('pnl-data.json', JSON.stringify(data,null,2), 'application/json');
+}
+function download(name, content, type){
+  const blob = new Blob([content],{type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name; a.click();
+  URL.revokeObjectURL(url);
+}
+function importJson(file){
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if(data.inputs) localStorage.setItem(STORAGE_KEY, JSON.stringify(data.inputs));
+      if(data.log) writeLog(data.log);
+      loadInputs(); render(); renderLog();
+    } catch(e){ alert('Invalid JSON: '+e.message); }
+  };
+  reader.readAsText(file);
+}
+
+// wire up
+FIELDS.forEach(f=>$(f).addEventListener('input',()=>{saveInputs();render()}));
+$('saveDay').onclick = saveDay;
+$('resetBtn').onclick = resetInputs;
+$('exportCsv').onclick = exportCsv;
+$('exportJson').onclick = exportJson;
+$('importBtn').onclick = ()=>$('importFile').click();
+$('importFile').onchange = e=>{if(e.target.files[0]) importJson(e.target.files[0])};
+$('entryDate').valueAsDate = new Date();
+
+loadInputs();
+render();
+renderLog();
+</script>
+</body>
+</html>
