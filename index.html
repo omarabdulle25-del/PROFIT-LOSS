@@ -450,7 +450,6 @@ async function scanImage(file){
       }
     });
     const text = result.data.text || '';
-    // pull dollar amounts with 2 decimals; require $ or whitespace before
     const matches = [...text.matchAll(/(?:\$|^|\s)(\d{1,4}\.\d{2})\b/g)].map(m=>parseFloat(m[1]));
     const counts = Object.fromEntries(BUNDLES.map(b=>[b.id,0]));
     const unmatched = [];
@@ -485,7 +484,6 @@ function wireInputs(){
   });
 }
 
-// ---------- init ----------
 renderBundleRows();
 loadInputs();
 wireInputs();
@@ -501,7 +499,6 @@ $('scanBtn').onclick = ()=>$('scanFile').click();
 $('scanFile').onchange = e=>{ if(e.target.files[0]) scanImage(e.target.files[0]); };
 $('clearScan').onclick = clearScan;
 
-// drag & drop
 const box = $('scanBox');
 ['dragenter','dragover'].forEach(ev=>box.addEventListener(ev, e=>{e.preventDefault();box.classList.add('drag')}));
 ['dragleave','drop'].forEach(ev=>box.addEventListener(ev, e=>{e.preventDefault();box.classList.remove('drag')}));
@@ -509,13 +506,11 @@ box.addEventListener('drop', e=>{
   const f = e.dataTransfer.files[0];
   if(f) scanImage(f);
 });
-// paste
 window.addEventListener('paste', e=>{
   const item = [...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));
   if(item){ const blob = item.getAsFile(); if(blob) scanImage(blob); }
 });
 
-// modal
 $('modalClose').onclick = ()=>$('modal').classList.add('hidden');
 $('modal').onclick = e=>{ if(e.target.id==='modal') $('modal').classList.add('hidden'); };
 
