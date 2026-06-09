@@ -4,17 +4,6 @@ const SECRET = "SPEND";
 const WORD_LENGTH = 5;
 const MAX_GUESSES = 5;
 
-// Returns the color for a single guessed character at a given position.
-// Simplified rules (no count-limiting):
-//   green  -> character is in the secret word AND at the same position
-//   yellow -> character is in the secret word but at a different position
-//   red    -> character is not in the secret word at all
-function colorFor(char, index) {
-  if (SECRET[index] === char) return "green";
-  if (SECRET.includes(char)) return "yellow";
-  return "red";
-}
-
 const COLORS = {
   green: "#6aaa64",
   yellow: "#c9b458",
@@ -22,9 +11,15 @@ const COLORS = {
   empty: "transparent",
 };
 
+function colorFor(char, index) {
+  if (SECRET[index] === char) return "green";
+  if (SECRET.includes(char)) return "yellow";
+  return "red";
+}
+
 export default function App() {
-  const [guesses, setGuesses] = useState([]); // array of submitted words (uppercase)
-  const [current, setCurrent] = useState(""); // text in the input box
+  const [guesses, setGuesses] = useState([]);
+  const [current, setCurrent] = useState("");
 
   const won = guesses.includes(SECRET);
   const lost = !won && guesses.length >= MAX_GUESSES;
@@ -35,13 +30,12 @@ export default function App() {
     if (gameOver) return;
 
     const word = current.toUpperCase();
-    if (word.length !== WORD_LENGTH) return; // only accept full 5-letter guesses
+    if (word.length !== WORD_LENGTH) return;
 
     setGuesses([...guesses, word]);
     setCurrent("");
   }
 
-  // Build a 5x5 grid: one row per guess slot, one cell per character.
   const rows = [];
   for (let r = 0; r < MAX_GUESSES; r++) {
     const word = guesses[r];
