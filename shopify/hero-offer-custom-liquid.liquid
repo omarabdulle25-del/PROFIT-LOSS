@@ -1,0 +1,296 @@
+{%- comment -%}
+  ===========================================================================
+  HERO OFFER BLOCK — paste into a "Custom Liquid" section/block in Shopify.
+  Fully self-contained: all styles are scoped under .plh so nothing in your
+  theme leaks in or out. Fluid sizing via clamp() — no media-query surgery
+  needed for phone / tablet / desktop.
+
+  EDIT ME: the settings block right below. Everything else is layout.
+  ===========================================================================
+{%- endcomment -%}
+
+{%- liquid
+  # ---------- EDITABLE SETTINGS ----------
+  assign badge_text     = 'Limited stock — schools are ordering 20+ at a time'
+  assign rating_value   = '4.9'
+  assign rating_count   = '2,847'
+  assign price_text     = '$39.90'
+  assign compare_text   = '$79.80'
+  assign discount_text  = '50% OFF'
+  assign save_text      = '$39.90'
+  assign save_suffix    = 'today only'
+  assign flash_text     = 'Flash sale — prices increase in 4 hours'
+
+  # Benefits: separate each line with a pipe |
+  assign benefits = 'Rewires curiosity into a lifelong learning habit|Boosts school performance, vocabulary & memory|Competes with screens — kids choose it over YouTube|Perfect for ages 6–12, gift-ready hardcover packaging'
+  assign benefit_list = benefits | split: '|'
+
+  # ---------- OPTIONAL: use the REAL product price ----------
+  # Liquid strings can't contain escaped quotes, so the headline is set with
+  # a capture tag just below instead of an assign.
+  #
+  # On a product page, delete the leading "# " from the 10 lines below and the
+  # live variant price overrides the hardcoded values above.
+  #
+  # if product
+  #   assign v = product.selected_or_first_available_variant
+  #   assign price_text = v.price | money
+  #   assign compare_text = ''
+  #   assign discount_text = ''
+  #   assign save_text = ''
+  #   if v.compare_at_price > v.price
+  #     assign saved = v.compare_at_price | minus: v.price
+  #     assign compare_text = v.compare_at_price | money
+  #     assign save_text = saved | money
+  #     assign pct = saved | times: 100.0 | divided_by: v.compare_at_price | round
+  #     assign discount_text = pct | append: '% OFF'
+  #   endif
+  # endif
+-%}
+
+{%- capture heading -%}
+  Kid's Encyclopedia "10,000 Whys" — Unlock Your Child's Full Potential
+{%- endcapture -%}
+
+<div class="plh">
+  <div class="plh__inner">
+
+    <div class="plh__badge">
+      <span class="plh__dot" aria-hidden="true"></span>
+      <span>{{ badge_text }}</span>
+    </div>
+
+    <h1 class="plh__title">{{ heading | strip }}</h1>
+
+    <div class="plh__rating">
+      <span class="plh__stars" aria-hidden="true">★★★★★</span>
+      <span class="plh__rating-num">{{ rating_value }}</span>
+      <span class="plh__rating-sep">·</span>
+      <span class="plh__rating-count">{{ rating_count }} reviews</span>
+    </div>
+
+    <div class="plh__price-row">
+      <span class="plh__price">{{ price_text }}</span>
+      {%- if compare_text != blank -%}
+        <s class="plh__compare">{{ compare_text }}</s>
+      {%- endif -%}
+      {%- if discount_text != blank -%}
+        <span class="plh__discount">{{ discount_text }}</span>
+      {%- endif -%}
+    </div>
+
+    {%- if save_text != blank -%}
+      <p class="plh__save">
+        <span class="plh__save-emoji" aria-hidden="true">🎉</span>
+        You save <strong>{{ save_text }}</strong> <span class="plh__save-suffix">{{ save_suffix }}</span>
+      </p>
+    {%- endif -%}
+
+    <ul class="plh__benefits">
+      {%- for benefit in benefit_list -%}
+        <li class="plh__benefit">
+          <span class="plh__check" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none" width="13" height="13">
+              <path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.6"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="plh__benefit-text">{{ benefit | strip }}</span>
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    <div class="plh__flash">
+      <span class="plh__flash-rule" aria-hidden="true"></span>
+      <span class="plh__flash-text"><span aria-hidden="true">⚡</span> {{ flash_text }}</span>
+      <span class="plh__flash-rule" aria-hidden="true"></span>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .plh {
+    /* ---- TWEAK THE LOOK HERE ---- */
+    --plh-bg:        #fbf9f5;   /* section background       */
+    --plh-ink:       #131c3d;   /* headline / body navy     */
+    --plh-muted:     #6b7280;   /* review + compare-at grey */
+    --plh-accent:    #b23a29;   /* price + sale red         */
+    --plh-amber-bg:  #fdf3d8;   /* badge fill               */
+    --plh-amber-br:  #f0c04a;   /* badge border             */
+    --plh-amber-ink: #8a4b12;   /* badge text               */
+    --plh-green-bg:  #dcf5e3;   /* check circle fill        */
+    --plh-green-ink: #17864a;   /* check tick               */
+    --plh-rule:      #e8e5df;   /* hairline dividers        */
+    --plh-star:      #f5a623;
+    --plh-max:       860px;     /* content width            */
+
+    background: var(--plh-bg);
+    color: var(--plh-ink);
+    font-family: inherit;
+    padding: clamp(24px, 5vw, 48px) clamp(16px, 5vw, 40px);
+    -webkit-font-smoothing: antialiased;
+  }
+  .plh *,
+  .plh *::before,
+  .plh *::after { box-sizing: border-box; }
+
+  .plh__inner { max-width: var(--plh-max); margin: 0 auto; }
+
+  /* ---------- badge ---------- */
+  .plh__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--plh-amber-bg);
+    border: 2px solid var(--plh-amber-br);
+    color: var(--plh-amber-ink);
+    border-radius: 999px;
+    padding: clamp(9px, 1.6vw, 13px) clamp(14px, 2.4vw, 20px);
+    font-size: clamp(13px, 1.55vw, 16px);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .plh__dot {
+    flex: 0 0 auto;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--plh-accent);
+    box-shadow: 0 0 0 3px rgba(178, 58, 41, .15);
+  }
+
+  /* ---------- headline ---------- */
+  .plh__title {
+    margin: clamp(18px, 3vw, 28px) 0 0;
+    font-size: clamp(30px, 5.6vw, 54px);
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--plh-ink);
+    text-wrap: balance;
+  }
+
+  /* ---------- rating ---------- */
+  .plh__rating {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: clamp(12px, 2vw, 18px);
+    font-size: clamp(15px, 1.8vw, 19px);
+  }
+  .plh__stars {
+    color: var(--plh-star);
+    font-size: clamp(18px, 2.4vw, 26px);
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+  .plh__rating-num   { font-weight: 700; }
+  .plh__rating-sep,
+  .plh__rating-count { color: var(--plh-muted); font-weight: 600; }
+
+  /* ---------- price ---------- */
+  .plh__price-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: clamp(10px, 1.8vw, 18px);
+    margin-top: clamp(16px, 2.6vw, 26px);
+  }
+  .plh__price {
+    font-size: clamp(38px, 7vw, 68px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--plh-accent);
+  }
+  .plh__compare {
+    font-size: clamp(20px, 2.8vw, 30px);
+    font-weight: 700;
+    color: var(--plh-muted);
+    text-decoration-thickness: 2px;
+  }
+  .plh__discount {
+    background: var(--plh-accent);
+    color: #fff;
+    border-radius: 10px;
+    padding: clamp(7px, 1.2vw, 11px) clamp(10px, 1.6vw, 16px);
+    font-size: clamp(13px, 1.7vw, 18px);
+    font-weight: 800;
+    letter-spacing: .01em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  /* ---------- you save ---------- */
+  .plh__save {
+    margin: clamp(10px, 1.6vw, 16px) 0 0;
+    font-size: clamp(14px, 1.7vw, 18px);
+    color: var(--plh-muted);
+    font-weight: 500;
+  }
+  .plh__save strong      { color: var(--plh-ink); font-weight: 800; }
+  .plh__save-emoji       { margin-right: 4px; }
+  .plh__save-suffix      { color: var(--plh-muted); }
+
+  /* ---------- benefits ---------- */
+  .plh__benefits {
+    list-style: none;
+    margin: clamp(20px, 3.4vw, 34px) 0 0;
+    padding: 0;
+    border-top: 1px solid var(--plh-rule);
+  }
+  .plh__benefit {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 1.8vw, 18px);
+    padding: clamp(13px, 2.1vw, 20px) 0;
+    border-bottom: 1px solid var(--plh-rule);
+  }
+  .plh__check {
+    flex: 0 0 auto;
+    width: clamp(26px, 3.2vw, 34px);
+    height: clamp(26px, 3.2vw, 34px);
+    border-radius: 50%;
+    background: var(--plh-green-bg);
+    color: var(--plh-green-ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .plh__check svg { width: 55%; height: 55%; display: block; }
+  .plh__benefit-text {
+    font-size: clamp(15px, 2vw, 21px);
+    line-height: 1.35;
+    font-weight: 500;
+  }
+
+  /* ---------- flash sale ---------- */
+  .plh__flash {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2vw, 18px);
+    margin-top: clamp(20px, 3vw, 30px);
+  }
+  .plh__flash-rule {
+    flex: 1 1 auto;
+    height: 1px;
+    background: var(--plh-rule);
+  }
+  .plh__flash-text {
+    flex: 0 1 auto;
+    text-align: center;
+    font-size: clamp(12px, 1.5vw, 16px);
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--plh-ink);
+  }
+
+  /* ---------- phones ---------- */
+  @media (max-width: 480px) {
+    .plh__badge   { font-size: 12.5px; align-items: flex-start; }
+    .plh__dot     { margin-top: 4px; }
+    .plh__flash-text { letter-spacing: .04em; }
+  }
+</style>
