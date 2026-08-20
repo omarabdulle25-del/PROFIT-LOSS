@@ -112,18 +112,23 @@
 <style>
   .plh {
     /* ---- TWEAK THE LOOK HERE ---- */
-    --plh-bg:        #fbf9f5;   /* section background       */
-    --plh-ink:       #131c3d;   /* headline / body navy     */
-    --plh-muted:     #6b7280;   /* review + compare-at grey */
+    --plh-bg:        #ffffff;   /* surface — use transparent to blend fully */
+    --plh-ink:       #101a35;   /* headline / body navy     */
+    --plh-muted:     #6b7482;   /* review + compare-at grey */
     --plh-accent:    #b23a29;   /* price + sale red         */
-    --plh-amber-bg:  #fdf3d8;   /* badge fill               */
+    --plh-amber-bg:  #fdf4dc;   /* badge fill               */
     --plh-amber-br:  #f0c04a;   /* badge border             */
     --plh-amber-ink: #8a4b12;   /* badge text               */
     --plh-green-bg:  #dcf5e3;   /* check circle fill        */
     --plh-green-ink: #17864a;   /* check tick               */
-    --plh-rule:      #e8e5df;   /* hairline dividers        */
+    --plh-rule:      #e7ebf1;   /* hairline dividers        */
     --plh-star:      #f5a623;
     --plh-max:       860px;     /* content width            */
+
+    /* Padding. Set --plh-pad-x to 0 if your theme's column already pads the
+       block — that keeps this text flush with the rest of the column. */
+    --plh-pad-x:     clamp(0px, 2.2cqi, 24px);
+    --plh-pad-y:     clamp(16px, 4cqi, 40px);
 
     /* Sizes scale off THIS BOX's width (cqi), not the viewport, so the block
        looks right in a narrow product column and in a full-width section.
@@ -133,8 +138,8 @@
     background: var(--plh-bg);
     color: var(--plh-ink);
     font-family: inherit;
-    padding: 26px 20px;
-    padding: clamp(18px, 4.6cqi, 44px) clamp(16px, 4.2cqi, 40px);
+    padding: 24px 12px;
+    padding: var(--plh-pad-y) var(--plh-pad-x);
     -webkit-font-smoothing: antialiased;
   }
   .plh *,
