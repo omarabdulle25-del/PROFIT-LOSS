@@ -84,3 +84,16 @@ and a grid of subject cards.
 - Colours: the CSS variables at the top of `<style>`. The band paints its own
   dark background, so set the section to full width with no padding in the
   theme editor if you want it edge to edge.
+
+## `reviews-custom-liquid.liquid`
+
+Reviews section: centred headline and a stack of review cards — stars, quote,
+then avatar, name, meta line and a verified badge.
+
+**Customising**
+
+- Copy: the `capture` blocks. Reviews are one block, fields split on `~~` and
+  reviews on `||` (quote ~~ name ~~ meta ~~ avatar URL).
+- Avatars: upload each photo under Settings → Files and paste its URL as the
+  fourth field; empty falls back to an initial circle.
+- Clear `verified_label` to drop the green badge.

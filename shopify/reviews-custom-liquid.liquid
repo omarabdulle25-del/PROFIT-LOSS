@@ -1,0 +1,265 @@
+{%- comment -%}
+  ===========================================================================
+  REVIEWS BLOCK — paste into a "Custom Liquid" section in Shopify.
+  Centred headline and a stack of review cards: stars, quote, then avatar,
+  name and meta line. Self-contained, styles scoped under .prv, sizes scale
+  off the container.
+
+  EDIT ME: the captures below. Everything else is layout.
+  ===========================================================================
+{%- endcomment -%}
+
+{%- comment -%} Headline: the second part is the coloured italic word. {%- endcomment -%}
+{%- capture title_lead -%}
+  What Parents Are
+{%- endcapture -%}
+{%- capture title_accent -%}
+  Saying
+{%- endcapture -%}
+
+{%- liquid
+  # Shown after each reviewer's meta line. Clear it to drop the badge.
+  assign verified_label = 'Verified buyer'
+-%}
+
+{%- comment -%}
+  ---------- REVIEWS ----------
+  quote ~~ name ~~ meta ~~ avatar image URL      (reviews separated by || )
+
+  Avatars: upload each photo in Shopify admin → Settings → Files, copy the
+  URL and paste it as the 4th field. Leave it empty for an initial circle.
+{%- endcomment -%}
+
+{%- capture review_data -%}
+  My 9-year-old asked me 'Mom, why do we have two eyes instead of one?' I didn't know
+  the answer. He went straight to this book, found it, and spent 45 minutes reading
+  about vision, brains and evolution. He came back and explained it to me. I almost
+  cried. His teacher called two weeks later to say he was the most engaged student in
+  class.
+  ~~ Rachel M. ~~ Mom of two · Texas ~~
+  ||
+  I was skeptical. My son doesn't read. He's a screen kid. I put this on the coffee
+  table and didn't say a word. Day 3, I found him on the floor reading about black
+  holes at 9pm when I thought he was asleep. He's read it cover to cover twice. That
+  is not a normal thing for him. Buy it — it competes with screens and wins.
+  ~~ David K. ~~ Father of one · California ~~
+  ||
+  Bought 3 copies — one for each of my kids and one for my nephew's birthday. The
+  dinner table conversations we've had because of this book are priceless. My
+  7-year-old explained tectonic plates to my mother-in-law. She was completely
+  speechless. This book changes how kids think, not just what they know.
+  ~~ Sarah J. ~~ Mom of three · Arizona ~~
+  ||
+  My daughter has never once picked up a book without being forced. I left this on the
+  coffee table on a Friday. By Sunday she had read half of it and was explaining to her
+  grandfather why the moon doesn't fall out of the sky. He's a retired engineer. He was
+  impressed. I was speechless. This book is something else entirely.
+  ~~ Lisa W. ~~ Mom of two · Ohio ~~
+  ||
+  Bought this for my grandson's birthday not knowing what to expect. He opened it,
+  looked at the cover for about thirty seconds, and said 'is this actually mine?' He
+  read it at his own party. His mum called me two months later to say he'd read it
+  three times and was asking if there was a second one. Best gift I've given in years.
+  ~~ Margaret T. ~~ Grandmother of four · Illinois ~~
+{%- endcapture -%}
+
+{%- assign review_rows = review_data | split: '||' -%}
+
+<div class="prv">
+  <div class="prv__inner">
+
+    <h2 class="prv__title">
+      {{ title_lead | strip }}
+      <span class="prv__accent">{{ title_accent | strip }}</span>
+    </h2>
+
+    <div class="prv__list">
+      {%- for row in review_rows -%}
+        {%- assign f = row | split: '~~' -%}
+        {%- assign r_quote  = f[0] | strip -%}
+        {%- assign r_name   = f[1] | strip -%}
+        {%- assign r_meta   = f[2] | strip -%}
+        {%- assign r_avatar = f[3] | strip -%}
+        <figure class="prv__card">
+          <span class="prv__stars" aria-hidden="true">★★★★★</span>
+          <blockquote class="prv__quote">&ldquo;{{ r_quote }}&rdquo;</blockquote>
+
+          <figcaption class="prv__who">
+            {%- if r_avatar != blank -%}
+              <img class="prv__avatar" src="{{ r_avatar }}" alt="{{ r_name }}"
+                   width="96" height="96" loading="lazy">
+            {%- else -%}
+              <span class="prv__avatar prv__avatar--initial" aria-hidden="true">
+                {{ r_name | slice: 0 }}
+              </span>
+            {%- endif -%}
+            <span class="prv__meta">
+              <span class="prv__name">{{ r_name }}</span>
+              <span class="prv__sub">
+                {{ r_meta }}
+                {%- if verified_label != blank -%}
+                  <span class="prv__sep" aria-hidden="true">·</span>
+                  <span class="prv__verified">
+                    <svg viewBox="0 0 20 20" width="11" height="11" fill="none" aria-hidden="true">
+                      <path d="M3.5 10.5l4 4 9-10" stroke="currentColor" stroke-width="2.6"
+                            stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    {{ verified_label }}
+                  </span>
+                {%- endif -%}
+              </span>
+            </span>
+          </figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .prv {
+    /* ---- TWEAK THE LOOK HERE ---- */
+    --prv-bg:       transparent; /* section surface           */
+    --prv-ink:      #101a35;     /* headline + names          */
+    --prv-quote:    #1d2740;     /* quote text                */
+    --prv-muted:    #8a93a5;     /* meta line                 */
+    --prv-accent:   #b23a29;     /* italic word in the title  */
+    --prv-green:    #1a7f4b;     /* verified badge            */
+    --prv-star:     #f0a92c;
+    --prv-card:     #ffffff;     /* card fill                 */
+    --prv-card-br:  #eef1f5;     /* card hairline + divider   */
+    --prv-max:      900px;       /* content width             */
+
+    --prv-pad-x:    clamp(0px, 2.2cqi, 24px);
+    --prv-pad-y:    clamp(24px, 4cqi, 56px);
+
+    /* sizes scale off this box, not the viewport */
+    container-type: inline-size;
+
+    background: var(--prv-bg);
+    color: var(--prv-ink);
+    font-family: inherit;
+    padding: 32px 16px;
+    padding: var(--prv-pad-y) var(--prv-pad-x);
+    -webkit-font-smoothing: antialiased;
+  }
+  .prv *,
+  .prv *::before,
+  .prv *::after { box-sizing: border-box; }
+
+  /* Themes style bare elements — :where() keeps these at zero specificity
+     so the component rules below always win. */
+  .prv :where(h2, p) { margin: 0; }
+  .prv :where(figure, figcaption, blockquote) {
+    margin: 0; padding: 0; border: 0; background: none; quotes: none;
+  }
+  .prv :where(blockquote)::before,
+  .prv :where(blockquote)::after { content: none; }
+  .prv :where(img) { display: block; max-width: 100%; height: auto; }
+
+  .prv__inner {
+    max-width: var(--prv-max);
+    margin: 0 auto;
+    container-type: inline-size;
+  }
+
+  .prv__title {
+    font-size: 26px;
+    font-size: clamp(22px, 4.4cqi, 40px);
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-align: center;
+    text-wrap: balance;
+    color: var(--prv-ink);
+  }
+  .prv__accent {
+    color: var(--prv-accent);
+    font-style: italic;
+  }
+
+  /* ---------- cards ---------- */
+  .prv__list {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 1.8cqi, 20px);
+    margin-top: clamp(18px, 3cqi, 34px);
+  }
+  .prv__card {
+    background: var(--prv-card);
+    border: 1px solid var(--prv-card-br);
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(16, 26, 53, .06);
+    padding: clamp(20px, 3cqi, 34px);
+  }
+  .prv__stars {
+    display: block;
+    color: var(--prv-star);
+    font-size: 16px;
+    font-size: clamp(15px, 1.9cqi, 20px);
+    letter-spacing: 3px;
+    line-height: 1;
+  }
+  .prv__quote {
+    margin-top: clamp(12px, 1.8cqi, 20px);
+    font-size: 15px;
+    font-size: clamp(14px, 1.9cqi, 18px);
+    line-height: 1.65;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--prv-quote);
+  }
+
+  /* ---------- attribution ---------- */
+  .prv__who {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1.4cqi, 15px);
+    margin-top: clamp(16px, 2.4cqi, 26px);
+    padding-top: clamp(14px, 2.2cqi, 24px);
+    border-top: 1px solid var(--prv-card-br);
+  }
+  .prv__avatar {
+    flex: 0 0 auto;
+    width: 40px;  height: 40px;
+    width: clamp(38px, 4.6cqi, 50px);
+    height: clamp(38px, 4.6cqi, 50px);
+    border-radius: 50%;
+    object-fit: cover;
+    background: #eef1f5;
+  }
+  .prv__avatar--initial {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-size: clamp(15px, 2cqi, 20px);
+    font-weight: 800;
+    color: var(--prv-ink);
+    text-transform: uppercase;
+  }
+  .prv__meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .prv__name {
+    font-size: 15px;
+    font-size: clamp(14px, 1.65cqi, 17px);
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--prv-ink);
+  }
+  .prv__sub {
+    font-size: 13px;
+    font-size: clamp(12.5px, 1.45cqi, 15px);
+    line-height: 1.35;
+    font-weight: 500;
+    color: var(--prv-muted);
+  }
+  .prv__verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--prv-green);
+    font-weight: 800;
+    white-space: nowrap;
+  }
+</style>
