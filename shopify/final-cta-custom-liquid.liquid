@@ -1,0 +1,248 @@
+{%- comment -%}
+  ===========================================================================
+  FINAL CTA — paste into a "Custom Liquid" section in Shopify.
+  Dark band: urgency pill, centred headline, sub-line, one big button and a
+  trust row. Self-contained, styles scoped under .pct.
+
+  The band paints its own dark background, so give the section full width
+  and zero padding in the theme editor if you want it edge to edge.
+
+  EDIT ME: the settings and captures below.
+  ===========================================================================
+{%- endcomment -%}
+
+{%- liquid
+  # ---------- WHERE THE BUTTON GOES ----------
+  # Placeholder until the real product page exists. Swap it for your own:
+  #   assign cta_url = '/products/your-product-handle'
+  # or, when this section sits on a product page, use the product itself:
+  #   assign cta_url = product.url
+  assign cta_url = 'https://tryarova.com/products/nac600-nad-daily-complex'
+-%}
+
+{%- capture pill -%}
+  Sale ends tonight — 50% off today only
+{%- endcapture -%}
+
+{%- comment -%} The accent line always starts on its own line. {%- endcomment -%}
+{%- capture title_lead -%}
+  Ready to Build Your Child's
+{%- endcapture -%}
+{%- capture title_accent -%}
+  Ultimate Brain?
+{%- endcapture -%}
+
+{%- capture subtitle -%}
+  Join 18,000+ families who made the decision. Free shipping.
+  30-day guarantee. No risk.
+{%- endcapture -%}
+
+{%- capture cta_label -%}
+  🧠 Get The Book — 50% Off
+{%- endcapture -%}
+
+{%- comment -%} Trust row: items separated by | {%- endcomment -%}
+{%- capture trust -%}
+  🛡️ 30-Day Guarantee | 📦 Free Shipping | 🔒 Secure Checkout
+{%- endcapture -%}
+
+{%- assign trust_items = trust | split: '|' -%}
+
+<div class="pct">
+  <div class="pct__inner">
+
+    {%- if pill != blank -%}
+      <p class="pct__pill">
+        <span class="pct__pill-dot" aria-hidden="true"></span>
+        {{ pill | strip }}
+      </p>
+    {%- endif -%}
+
+    <h2 class="pct__title">
+      {{ title_lead | strip }}
+      <span class="pct__accent">{{ title_accent | strip }}</span>
+    </h2>
+
+    {%- if subtitle != blank -%}
+      <p class="pct__sub">{{ subtitle | strip }}</p>
+    {%- endif -%}
+
+    <a class="pct__btn" href="{{ cta_url }}">
+      <span class="pct__btn-label">{{ cta_label | strip }}</span>
+      <svg class="pct__btn-arrow" viewBox="0 0 24 24" width="18" height="18"
+           fill="none" aria-hidden="true">
+        <path d="M4 12h15M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+
+    {%- if trust_items.size > 0 -%}
+      <ul class="pct__trust">
+        {%- for item in trust_items -%}
+          <li class="pct__trust-item">{{ item | strip }}</li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<style>
+  .pct {
+    /* ---- TWEAK THE LOOK HERE ---- */
+    --pct-bg:       #141f3d;   /* band background          */
+    --pct-ink:      #ffffff;   /* headline                 */
+    --pct-muted:    #9fa9c2;   /* sub-line + trust row     */
+    --pct-accent:   #f2b23f;   /* accent line + pill text  */
+    --pct-pill-bg:  #22305a;   /* pill fill                */
+    --pct-btn:      #de3f24;   /* button fill              */
+    --pct-btn-hov:  #ea4a2e;   /* button fill on hover     */
+    --pct-btn-ink:  #ffffff;   /* button text              */
+    --pct-glow:     rgba(222, 63, 36, .45);
+    --pct-max:      780px;     /* content width            */
+
+    --pct-pad-x:    clamp(16px, 3cqi, 40px);
+    --pct-pad-y:    clamp(40px, 6cqi, 84px);
+
+    /* sizes scale off this box, not the viewport */
+    container-type: inline-size;
+
+    background: var(--pct-bg);
+    color: var(--pct-ink);
+    font-family: inherit;
+    padding: 48px 20px;
+    padding: var(--pct-pad-y) var(--pct-pad-x);
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+  }
+  .pct *,
+  .pct *::before,
+  .pct *::after { box-sizing: border-box; }
+
+  /* Themes style bare elements — :where() keeps these at zero specificity
+     so the component rules below always win. */
+  .pct :where(ul) { list-style: none; margin: 0; padding: 0; }
+  .pct :where(h2, p, li) { margin: 0; }
+
+  .pct__inner {
+    max-width: var(--pct-max);
+    margin: 0 auto;
+    container-type: inline-size;
+  }
+
+  /* ---------- urgency pill ---------- */
+  .pct__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--pct-pill-bg);
+    color: var(--pct-accent);
+    border-radius: 999px;
+    padding: clamp(7px, 1cqi, 11px) clamp(13px, 1.9cqi, 20px);
+    font-size: 11.5px;
+    font-size: clamp(10px, 1.5cqi, 13.5px);
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    line-height: 1.25;
+  }
+  .pct__pill-dot {
+    flex: 0 0 auto;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* ---------- headline ---------- */
+  .pct__title {
+    margin-top: clamp(16px, 2.6cqi, 28px);
+    font-size: 28px;
+    font-size: clamp(26px, 5.9cqi, 46px);
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--pct-ink);
+    text-wrap: balance;
+  }
+  /* the accent always starts its own line — delete this rule to let it flow */
+  .pct__accent {
+    display: block;
+    color: var(--pct-accent);
+    font-style: italic;
+  }
+  .pct__sub {
+    max-width: 34em;
+    margin: clamp(14px, 2.4cqi, 24px) auto 0;
+    font-size: 15px;
+    font-size: clamp(14px, 2.1cqi, 18px);
+    line-height: 1.6;
+    font-weight: 500;
+    color: var(--pct-muted);
+    /* evens the two lines out — without it the text can break inside
+       "30-day", leaving a stranded hyphen at the end of a line */
+    text-wrap: balance;
+  }
+
+  /* ---------- button ---------- */
+  .pct__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(10px, 1.6cqi, 16px);
+    max-width: 100%;
+    margin-top: clamp(22px, 4cqi, 44px);
+    padding: clamp(15px, 2.3cqi, 22px) clamp(22px, 4cqi, 46px);
+    background: var(--pct-btn);
+    color: var(--pct-btn-ink);
+    border-radius: 10px;
+    box-shadow: 0 10px 34px var(--pct-glow);
+    font-size: 16px;
+    font-size: clamp(15px, 2.3cqi, 19px);
+    font-weight: 800;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+  }
+  .pct__btn:hover,
+  .pct__btn:focus-visible {
+    background: var(--pct-btn-hov);
+    color: var(--pct-btn-ink);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 40px var(--pct-glow);
+  }
+  .pct__btn:focus-visible { outline: 3px solid var(--pct-accent); outline-offset: 3px; }
+  .pct__btn-arrow { flex: 0 0 auto; }
+
+  /* ---------- trust row ---------- */
+  .pct__trust {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 1.4cqi, 14px);
+    margin-top: clamp(16px, 2.6cqi, 26px);
+    font-size: 12px;
+    font-size: clamp(11.5px, 1.7cqi, 14.5px);
+    font-weight: 700;
+    color: var(--pct-muted);
+  }
+  /* separators between items, never a trailing one */
+  .pct__trust-item + .pct__trust-item::before {
+    content: "·";
+    margin-right: clamp(8px, 1.4cqi, 14px);
+    color: var(--pct-muted);
+    opacity: .7;
+  }
+
+  /* once the row has to wrap, a separator can land at the start of a line —
+     drop them and let the gap do the separating */
+  @container (max-width: 470px) {
+    .pct__trust { gap: clamp(10px, 3cqi, 16px); }
+    .pct__trust-item + .pct__trust-item::before { content: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pct__btn { transition: none; }
+    .pct__btn:hover { transform: none; }
+  }
+</style>

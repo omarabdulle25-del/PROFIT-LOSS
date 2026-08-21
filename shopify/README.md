@@ -97,3 +97,16 @@ then avatar, name, meta line and a verified badge.
 - Avatars: upload each photo under Settings → Files and paste its URL as the
   fourth field; empty falls back to an initial circle.
 - Clear `verified_label` to drop the green badge.
+
+## `final-cta-custom-liquid.liquid`
+
+Closing CTA on a dark band: urgency pill, headline with an accent line,
+sub-line, one large button and a trust row.
+
+**Customising**
+
+- `cta_url` is where the button goes. It currently holds a placeholder link —
+  swap it for `/products/your-handle`, or `product.url` on a product page.
+- Copy: the `capture` blocks. Trust row items are separated by `|`.
+- Colours: the CSS variables at the top of `<style>`. The band paints its own
+  background, so set the section to full width with no padding.
