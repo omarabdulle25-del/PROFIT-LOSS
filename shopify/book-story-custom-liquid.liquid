@@ -1,0 +1,332 @@
+{%- comment -%}
+  ===========================================================================
+  STORY / FEATURES BLOCK — paste into a "Custom Liquid" section in Shopify.
+  Eyebrow pill, headline with a highlighted phrase, intro line, four feature
+  rows and a review card. Self-contained: styles scoped under .pls, sizes
+  scale off the container so it fits full width or a narrower column.
+
+  EDIT ME: the captures below. Everything else is layout.
+  ===========================================================================
+{%- endcomment -%}
+
+{%- liquid
+  # ---------- OPTIONAL IMAGE ----------
+  # Leave empty and the copy runs full width (as in the original section).
+  # Paste a Shopify Files URL to put a photo beside it instead.
+  assign image_url = ''
+  assign image_alt = 'Child reading the encyclopedia'
+-%}
+
+{%- capture eyebrow -%}
+  Why 18,000+ families chose this book
+{%- endcapture -%}
+
+{%- comment -%} Headline: the middle part gets the amber highlight. {%- endcomment -%}
+{%- capture title_lead -%}
+  One Book That Answers
+{%- endcapture -%}
+{%- capture title_mark -%}
+  Every Single "Why"
+{%- endcapture -%}
+{%- capture title_tail -%}
+  Your Child Comes Up With
+{%- endcapture -%}
+
+{%- capture intro -%}
+  Not homework. Not a reference book that gathers dust. The one children open on
+  their own — and keep reading long after you've said goodnight.
+{%- endcapture -%}
+
+{%- comment -%}
+  ---------- FEATURE ROWS ----------
+  icon ~~ headline ~~ description        (rows separated by || )
+  The icon is just an emoji — swap it for any character you like.
+{%- endcomment -%}
+
+{%- capture feature_data -%}
+  🧠 ~~ The Questions They Actually Ask ~~
+  Why the sky is blue, why we dream, why the dog does that — the ones that land at dinner
+  ||
+  🚀 ~~ One Book, Every Subject ~~
+  Animals, space, the human body, weather, machines and everyday mysteries
+  ||
+  📵 ~~ It Wins Against The Tablet ~~
+  Kids reach for it by choice — parents tell us it's the only thing that competes
+  ||
+  ⭐ ~~ Built For Ages 6–12 ~~
+  Plain language, big illustrations, made to be read for fun rather than for marks
+{%- endcapture -%}
+
+{%- comment -%} ---------- REVIEW ---------- {%- endcomment -%}
+{%- capture review_quote -%}
+  His teacher rang to tell me he was the most curious child in the class. All from a
+  book he found lying on the coffee table.
+{%- endcapture -%}
+{%- capture review_by -%}
+  Rachel M., Mom of two · Verified buyer
+{%- endcapture -%}
+
+{%- assign feature_rows = feature_data | split: '||' -%}
+
+<div class="pls">
+  <div class="pls__inner">
+
+    {%- if image_url != blank -%}
+      <div class="pls__media">
+        <img class="pls__img" src="{{ image_url }}" alt="{{ image_alt | strip }}"
+             width="1200" loading="lazy">
+      </div>
+    {%- endif -%}
+
+    <div class="pls__body">
+
+      {%- if eyebrow != blank -%}
+        <p class="pls__eyebrow">
+          <span class="pls__eyebrow-dot" aria-hidden="true"></span>
+          {{ eyebrow | strip }}
+        </p>
+      {%- endif -%}
+
+      <h2 class="pls__title">
+        {{ title_lead | strip }}
+        <span class="pls__mark">{{ title_mark | strip }}</span>
+        {{ title_tail | strip }}
+      </h2>
+
+      {%- if intro != blank -%}
+        <p class="pls__intro">{{ intro | strip }}</p>
+      {%- endif -%}
+
+      <ul class="pls__features">
+        {%- for row in feature_rows -%}
+          {%- assign f = row | split: '~~' -%}
+          {%- assign f_icon = f[0] | strip -%}
+          {%- assign f_head = f[1] | strip -%}
+          {%- assign f_desc = f[2] | strip -%}
+          <li class="pls__feature">
+            <span class="pls__icon" aria-hidden="true">{{ f_icon }}</span>
+            <span class="pls__ftext">
+              <span class="pls__fhead">{{ f_head }}</span>
+              {%- if f_desc != blank -%}
+                <span class="pls__fdesc">{{ f_desc }}</span>
+              {%- endif -%}
+            </span>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if review_quote != blank -%}
+        <figure class="pls__review">
+          <span class="pls__stars" aria-hidden="true">★★★★★</span>
+          <blockquote class="pls__quote">&ldquo;{{ review_quote | strip }}&rdquo;</blockquote>
+          {%- if review_by != blank -%}
+            <figcaption class="pls__by">— {{ review_by | strip }}</figcaption>
+          {%- endif -%}
+        </figure>
+      {%- endif -%}
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .pls {
+    /* ---- TWEAK THE LOOK HERE ---- */
+    --pls-bg:        transparent; /* section surface                  */
+    --pls-ink:       #101a35;     /* headings                         */
+    --pls-muted:     #6b7482;     /* body copy                        */
+    --pls-mark:      #edb04c;     /* headline highlight               */
+    --pls-accent:    #b23a29;     /* review card rule                 */
+    --pls-green-bg:  #dcf5e0;     /* eyebrow pill fill                */
+    --pls-green-ink: #17694a;     /* eyebrow pill text                */
+    --pls-card:      #ffffff;     /* icon tiles + review card         */
+    --pls-card-br:   #eceff4;     /* their hairline border            */
+    --pls-star:      #f5a623;
+    --pls-max:       1180px;      /* content width                    */
+
+    --pls-pad-x:     clamp(0px, 2.2cqi, 24px);
+    --pls-pad-y:     clamp(20px, 3.6cqi, 52px);
+
+    /* sizes scale off this box, not the viewport */
+    container-type: inline-size;
+
+    background: var(--pls-bg);
+    color: var(--pls-ink);
+    font-family: inherit;
+    padding: 28px 16px;
+    padding: var(--pls-pad-y) var(--pls-pad-x);
+    -webkit-font-smoothing: antialiased;
+  }
+  .pls *,
+  .pls *::before,
+  .pls *::after { box-sizing: border-box; }
+
+  /* Themes style bare elements — neutralise that. :where() keeps these at
+     zero specificity so the component rules below always win. */
+  .pls :where(ul) { list-style: none; margin: 0; padding: 0; }
+  .pls :where(h2, p, li) { margin: 0; }
+  .pls :where(figure, figcaption, blockquote) {
+    margin: 0; padding: 0; border: 0; background: none; quotes: none;
+  }
+  .pls :where(blockquote)::before,
+  .pls :where(blockquote)::after { content: none; }
+  .pls :where(img) { display: block; max-width: 100%; height: auto; }
+
+  .pls__inner {
+    max-width: var(--pls-max);
+    margin: 0 auto;
+    display: grid;
+    gap: clamp(20px, 3.4cqi, 48px);
+  }
+  /* only splits into columns when an image is present and there is room */
+  @container (min-width: 760px) {
+    .pls__inner:has(.pls__media) {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      align-items: center;
+    }
+  }
+  .pls__img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+    background: #eef1f5;
+  }
+
+  /* the copy column is its own container so type sizes off the column */
+  .pls__body { container-type: inline-size; }
+
+  /* ---------- eyebrow ---------- */
+  .pls__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--pls-green-bg);
+    color: var(--pls-green-ink);
+    border-radius: 999px;
+    padding: clamp(7px, .75cqi, 11px) clamp(12px, 1.4cqi, 20px);
+    font-size: 12px;
+    font-size: clamp(10.5px, 1.15cqi, 14px);
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    line-height: 1.25;
+  }
+  .pls__eyebrow-dot {
+    flex: 0 0 auto;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* ---------- headline ---------- */
+  .pls__title {
+    margin-top: clamp(14px, 1.9cqi, 26px);
+    font-size: 27px;
+    font-size: clamp(24px, 3.9cqi, 46px);
+    line-height: 1.16;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--pls-ink);
+  }
+  .pls__mark {
+    background: var(--pls-mark);
+    border-radius: 4px;
+    padding: .04em .3em .1em;
+    /* keeps the highlight boxed correctly when the phrase wraps */
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  /* ---------- intro ---------- */
+  .pls__intro {
+    margin-top: clamp(14px, 1.9cqi, 26px);
+    font-size: 15px;
+    font-size: clamp(14.5px, 1.6cqi, 19px);
+    line-height: 1.6;
+    font-weight: 500;
+    color: var(--pls-muted);
+    max-width: 62ch;
+  }
+
+  /* ---------- feature rows ---------- */
+  .pls__features {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 2.1cqi, 28px);
+    margin-top: clamp(20px, 2.9cqi, 40px);
+  }
+  .pls__feature {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(12px, 1.5cqi, 22px);
+    align-items: start;
+  }
+  .pls__icon {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;  height: 40px;
+    width: clamp(36px, 3.7cqi, 50px);
+    height: clamp(36px, 3.7cqi, 50px);
+    border-radius: 12px;
+    background: var(--pls-card);
+    border: 1px solid var(--pls-card-br);
+    box-shadow: 0 1px 3px rgba(16, 26, 53, .05);
+    font-size: 18px;
+    font-size: clamp(16px, 1.75cqi, 23px);
+    line-height: 1;
+  }
+  .pls__ftext { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .pls__fhead {
+    font-size: 16px;
+    font-size: clamp(15px, 1.5cqi, 19px);
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--pls-ink);
+  }
+  .pls__fdesc {
+    font-size: 14px;
+    font-size: clamp(13.5px, 1.35cqi, 17px);
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--pls-muted);
+    max-width: 66ch;
+  }
+
+  /* ---------- review card ---------- */
+  .pls__review {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(9px, 1.1cqi, 14px);
+    margin-top: clamp(22px, 3.2cqi, 44px);
+    background: var(--pls-card);
+    border: 1px solid var(--pls-card-br);
+    border-left: 4px solid var(--pls-accent);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(16, 26, 53, .05);
+    padding: clamp(16px, 2.2cqi, 30px) clamp(16px, 2.4cqi, 34px);
+  }
+  .pls__stars {
+    color: var(--pls-star);
+    font-size: 15px;
+    font-size: clamp(14px, 1.5cqi, 19px);
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+  .pls__quote {
+    font-size: 15px;
+    font-size: clamp(14px, 1.5cqi, 19px);
+    line-height: 1.6;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--pls-ink);
+  }
+  .pls__by {
+    font-size: 13.5px;
+    font-size: clamp(13px, 1.3cqi, 16px);
+    font-weight: 700;
+    color: var(--pls-muted);
+  }
+</style>

@@ -41,3 +41,17 @@ underneath. Same install path as above (Custom Liquid section).
 
 The columns sit side by side once the section is at least 760px wide and stack
 below that, measured on the section itself rather than the viewport.
+
+## `book-story-custom-liquid.liquid`
+
+Story section: eyebrow pill, headline with a highlighted phrase, intro line,
+four icon feature rows and a review card. Same install path as above.
+
+**Customising**
+
+- Copy: the `capture` blocks at the top. The headline is three parts — lead,
+  highlighted phrase, tail.
+- Features: one block, fields split on `~~` and rows on `||`. The icon is an
+  emoji, so swap it for any character.
+- Image: `image_url` is empty by default and the copy runs full width; paste a
+  Files URL to put a photo beside it (columns split above a 760px container).

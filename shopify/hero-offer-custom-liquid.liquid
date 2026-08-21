@@ -233,19 +233,18 @@
   .plh *::after { box-sizing: border-box; }
 
   /* Themes style bare blockquote/figure/button elements; neutralise that
-     so the block looks the same on every theme. */
-  .plh figure,
-  .plh figcaption,
-  .plh blockquote {
+     so the block looks the same on every theme. :where() keeps these at
+     zero specificity so the component rules below always win. */
+  .plh :where(figure, figcaption, blockquote) {
     margin: 0;
     padding: 0;
     border: 0;
     background: none;
     quotes: none;
   }
-  .plh blockquote::before,
-  .plh blockquote::after { content: none; }
-  .plh button {
+  .plh :where(blockquote)::before,
+  .plh :where(blockquote)::after { content: none; }
+  .plh :where(button) {
     font: inherit;
     -webkit-appearance: none;
     appearance: none;

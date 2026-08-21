@@ -150,10 +150,11 @@
   .plx *::before,
   .plx *::after { box-sizing: border-box; }
 
-  /* themes style bare list/heading elements — neutralise that */
-  .plx ul { list-style: none; margin: 0; padding: 0; }
-  .plx h2, .plx p, .plx li { margin: 0; }
-  .plx img { display: block; max-width: 100%; height: auto; }
+  /* Themes style bare list/heading elements — neutralise that. :where()
+     keeps these at zero specificity so the component rules below win. */
+  .plx :where(ul) { list-style: none; margin: 0; padding: 0; }
+  .plx :where(h2, p, li) { margin: 0; }
+  .plx :where(img) { display: block; max-width: 100%; height: auto; }
 
   .plx__inner {
     max-width: var(--plx-max);
