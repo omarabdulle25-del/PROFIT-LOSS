@@ -175,7 +175,9 @@
     margin-top: clamp(12px, 1.7cqi, 22px);
     font-size: 27px;
     font-size: clamp(24px, 3.6cqi, 42px);
-    line-height: 1.18;
+    /* roomier than a plain headline needs: the highlight box adds height to
+       its line, so a tight line-height makes it crowd the line below */
+    line-height: 1.34;
     font-weight: 800;
     letter-spacing: -0.02em;
     color: var(--pgs-ink);
@@ -185,7 +187,7 @@
     background: var(--pgs-mark);
     color: var(--pgs-mark-ink);
     border-radius: 4px;
-    padding: .04em .28em .1em;
+    padding: .02em .28em .06em;
     /* a short highlight splitting across lines reads as a mistake */
     white-space: nowrap;
     -webkit-box-decoration-break: clone;
