@@ -149,6 +149,16 @@
      not off the full-width section */
   .prc__inner { container-type: inline-size; }
 
+  /* On narrow screens the header block reads better centred. The footnote
+     stays left-aligned as fine print. To centre at EVERY width instead,
+     move the .prc__inner rule out of the @container block. */
+  @container (max-width: 600px) {
+    .prc__inner { text-align: center; }
+    .prc__note  { text-align: left; }
+    /* evens out the headline's lines instead of stranding a short last one */
+    .prc__title { text-wrap: balance; }
+  }
+
   /* ---------- header ---------- */
   .prc__eyebrow {
     display: inline-flex;
