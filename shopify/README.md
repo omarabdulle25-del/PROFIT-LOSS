@@ -55,3 +55,17 @@ four icon feature rows and a review card. Same install path as above.
   emoji, so swap it for any character.
 - Image: `image_url` is empty by default and the copy runs full width; paste a
   Files URL to put a photo beside it (columns split above a 760px container).
+
+## `results-stats-custom-liquid.liquid`
+
+Results section: eyebrow pill, headline with a coloured figure, sub-line,
+stacked stat cards whose numbers count up on scroll, and a source footnote.
+
+**Customising**
+
+- Copy: the `capture` blocks. Cards are one block, fields split on `~~` and
+  cards on `||` (number ~~ description ~~ chip).
+- `count_ms` sets the count-up length; `0` shows the final numbers at once.
+  Reduced-motion users and browsers without IntersectionObserver also get the
+  final numbers, never a zero.
+- Drop the `%` by deleting the `.prc__pct` span in the card markup.

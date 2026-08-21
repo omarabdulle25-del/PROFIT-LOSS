@@ -1,0 +1,319 @@
+{%- comment -%}
+  ===========================================================================
+  RESULTS BLOCK — paste into a "Custom Liquid" section in Shopify.
+  Eyebrow pill, headline with a coloured figure, sub-line, stacked stat cards
+  whose numbers count up when they scroll into view, and a source footnote.
+  Self-contained: styles scoped under .prc, sizes scale off the container.
+
+  EDIT ME: the captures below. Everything else is layout.
+  ===========================================================================
+{%- endcomment -%}
+
+{%- capture eyebrow -%}
+  The results speak for themselves
+{%- endcapture -%}
+
+{%- comment -%} Headline: the middle part is the coloured italic figure. {%- endcomment -%}
+{%- capture title_lead -%}
+  Loved by
+{%- endcapture -%}
+{%- capture title_figure -%}
+  18,000+
+{%- endcapture -%}
+{%- capture title_tail -%}
+  Families Worldwide
+{%- endcapture -%}
+
+{%- capture subtitle -%}
+  Real parents. Real kids. Real results — tracked over 90 days.
+{%- endcapture -%}
+
+{%- comment -%}
+  ---------- STAT CARDS ----------
+  number ~~ description ~~ chip        (cards separated by || )
+
+  The number counts up from zero when the card scrolls into view. Use a plain
+  figure — commas are fine (1,200) and are kept while counting.
+{%- endcomment -%}
+
+{%- capture stat_data -%}
+  94 ~~ of parents say their child's school performance improved within 60 days
+  ~~ 📈 School performance
+  ||
+  97 ~~ of kids voluntarily picked up the book without being asked, after day 7
+  ~~ 📚 Voluntary reading
+  ||
+  91 ~~ of parents said their child started asking deeper, more insightful questions
+  ~~ 🧠 Curiosity & thinking
+{%- endcapture -%}
+
+{%- capture footnote -%}
+  Results from a 90-day post-purchase survey of 1,200+ customers, December 2024 – February 2025.
+{%- endcapture -%}
+
+{%- liquid
+  assign stat_rows = stat_data | split: '||'
+  # Count-up length in milliseconds. Set to 0 to show the final number at once.
+  assign count_ms = 900
+-%}
+
+<div class="prc">
+  <div class="prc__inner">
+
+    {%- if eyebrow != blank -%}
+      <p class="prc__eyebrow">
+        <span class="prc__eyebrow-dot" aria-hidden="true"></span>
+        {{ eyebrow | strip }}
+      </p>
+    {%- endif -%}
+
+    <h2 class="prc__title">
+      {{ title_lead | strip }}
+      <span class="prc__figure">{{ title_figure | strip }}</span>
+      {{ title_tail | strip }}
+    </h2>
+
+    {%- if subtitle != blank -%}
+      <p class="prc__sub">{{ subtitle | strip }}</p>
+    {%- endif -%}
+
+    <div class="prc__cards" data-count-ms="{{ count_ms }}">
+      {%- for row in stat_rows -%}
+        {%- assign f = row | split: '~~' -%}
+        {%- assign s_num  = f[0] | strip -%}
+        {%- assign s_desc = f[1] | strip -%}
+        {%- assign s_chip = f[2] | strip -%}
+        <div class="prc__card">
+          <p class="prc__stat">
+            <span class="prc__num" data-count="{{ s_num }}">{{ s_num }}</span><span
+                  class="prc__pct" aria-hidden="true">%</span>
+          </p>
+          {%- if s_desc != blank -%}
+            <p class="prc__desc">{{ s_desc }}</p>
+          {%- endif -%}
+          {%- if s_chip != blank -%}
+            <p class="prc__chip">{{ s_chip }}</p>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if footnote != blank -%}
+      <p class="prc__note">{{ footnote | strip }}</p>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<style>
+  .prc {
+    /* ---- TWEAK THE LOOK HERE ---- */
+    --prc-bg:        transparent; /* section surface            */
+    --prc-ink:       #101a35;     /* headings + numbers         */
+    --prc-muted:     #6b7482;     /* body copy                  */
+    --prc-faint:     #9aa2ae;     /* footnote                   */
+    --prc-accent:    #b23a29;     /* figure + percent sign      */
+    --prc-green-bg:  #dcf5e0;     /* eyebrow pill fill          */
+    --prc-green-ink: #17694a;     /* eyebrow pill text          */
+    --prc-card:      #ffffff;     /* stat cards                 */
+    --prc-card-br:   #eceff4;     /* card hairline              */
+    --prc-chip-bg:   #f4f2ee;     /* chip fill                  */
+    --prc-max:       900px;       /* content width              */
+
+    --prc-pad-x:     clamp(0px, 2.2cqi, 24px);
+    --prc-pad-y:     clamp(20px, 3.6cqi, 52px);
+
+    /* sizes scale off this box, not the viewport */
+    container-type: inline-size;
+
+    background: var(--prc-bg);
+    color: var(--prc-ink);
+    font-family: inherit;
+    padding: 28px 16px;
+    padding: var(--prc-pad-y) var(--prc-pad-x);
+    -webkit-font-smoothing: antialiased;
+  }
+  .prc *,
+  .prc *::before,
+  .prc *::after { box-sizing: border-box; }
+
+  /* Themes style bare elements — :where() keeps these at zero specificity
+     so the component rules below always win. */
+  .prc :where(h2, p) { margin: 0; }
+
+  .prc__inner {
+    max-width: var(--prc-max);
+    margin: 0 auto;
+  }
+  /* the inner column is its own container so type sizes off the column,
+     not off the full-width section */
+  .prc__inner { container-type: inline-size; }
+
+  /* ---------- header ---------- */
+  .prc__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--prc-green-bg);
+    color: var(--prc-green-ink);
+    border-radius: 999px;
+    padding: clamp(7px, .75cqi, 11px) clamp(12px, 1.4cqi, 20px);
+    font-size: 12px;
+    font-size: clamp(10px, 1.35cqi, 14px);
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    line-height: 1.25;
+  }
+  .prc__eyebrow-dot {
+    flex: 0 0 auto;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .prc__title {
+    margin-top: clamp(12px, 2.2cqi, 24px);
+    font-size: 26px;
+    font-size: clamp(22px, 4.4cqi, 40px);
+    line-height: 1.16;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--prc-ink);
+  }
+  .prc__figure {
+    color: var(--prc-accent);
+    font-style: italic;
+  }
+  .prc__sub {
+    margin-top: clamp(10px, 1.7cqi, 18px);
+    font-size: 15px;
+    font-size: clamp(14px, 2cqi, 19px);
+    line-height: 1.55;
+    font-weight: 500;
+    color: var(--prc-muted);
+  }
+
+  /* ---------- stat cards ---------- */
+  .prc__cards {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 1.8cqi, 20px);
+    margin-top: clamp(18px, 3cqi, 34px);
+  }
+  .prc__card {
+    background: var(--prc-card);
+    border: 1px solid var(--prc-card-br);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(16, 26, 53, .05);
+    padding: clamp(22px, 3.6cqi, 40px) clamp(18px, 3cqi, 34px);
+    text-align: center;
+  }
+  .prc__stat {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    line-height: 1;
+    color: var(--prc-ink);
+  }
+  .prc__num {
+    font-size: 46px;
+    font-size: clamp(42px, 7cqi, 64px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    /* keeps the layout still while the digits change */
+    font-variant-numeric: tabular-nums;
+  }
+  .prc__pct {
+    margin-top: .12em;
+    font-size: 20px;
+    font-size: clamp(19px, 3cqi, 28px);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--prc-accent);
+  }
+  .prc__desc {
+    margin-top: clamp(12px, 1.9cqi, 20px);
+    font-size: 14px;
+    font-size: clamp(13.5px, 1.75cqi, 17px);
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--prc-muted);
+  }
+  .prc__chip {
+    display: inline-block;
+    margin-top: clamp(12px, 1.9cqi, 20px);
+    background: var(--prc-chip-bg);
+    border-radius: 999px;
+    padding: clamp(6px, .9cqi, 10px) clamp(11px, 1.5cqi, 18px);
+    font-size: 12.5px;
+    font-size: clamp(11.5px, 1.5cqi, 15px);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--prc-ink);
+  }
+
+  /* ---------- footnote ---------- */
+  .prc__note {
+    margin-top: clamp(14px, 2.2cqi, 24px);
+    font-size: 12px;
+    font-size: clamp(11.5px, 1.5cqi, 14px);
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--prc-faint);
+  }
+</style>
+
+<script>
+  (function () {
+    var groups = document.querySelectorAll('.prc__cards:not([data-prc-ready])');
+
+    Array.prototype.forEach.call(groups, function (group) {
+      group.setAttribute('data-prc-ready', '');
+
+      var nums = group.querySelectorAll('.prc__num');
+      var ms   = parseInt(group.getAttribute('data-count-ms'), 10);
+      var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (isNaN(ms)) ms = 900;
+      // no animation wanted, or the browser can't observe — leave the final
+      // numbers exactly as the markup rendered them
+      if (ms <= 0 || calm || !('IntersectionObserver' in window)) return;
+
+      function run(el, delay) {
+        var raw   = el.getAttribute('data-count') || el.textContent;
+        var comma = raw.indexOf(',') > -1;
+        var target = parseFloat(raw.replace(/[^0-9.]/g, ''));
+        if (isNaN(target)) return;
+
+        function fmt(n) {
+          n = Math.round(n);
+          return comma ? n.toLocaleString('en-US') : String(n);
+        }
+
+        el.textContent = fmt(0);
+        var start = null;
+        function step(now) {
+          if (start === null) start = now;
+          var t = Math.min((now - start) / ms, 1);
+          var eased = 1 - Math.pow(1 - t, 3);        // easeOutCubic
+          el.textContent = fmt(target * eased);
+          if (t < 1) requestAnimationFrame(step);
+          else el.textContent = fmt(target);
+        }
+        setTimeout(function () { requestAnimationFrame(step); }, delay);
+      }
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          io.unobserve(entry.target);              // count once, not on every pass
+          var i = Array.prototype.indexOf.call(nums, entry.target);
+          run(entry.target, i > 0 ? i * 120 : 0);  // slight stagger down the stack
+        });
+      }, { threshold: 0.4 });
+
+      Array.prototype.forEach.call(nums, function (el) { io.observe(el); });
+    });
+  })();
+</script>
