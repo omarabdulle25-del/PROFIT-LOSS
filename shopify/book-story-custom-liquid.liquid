@@ -26,15 +26,15 @@
   One Book That Answers
 {%- endcapture -%}
 {%- capture title_mark -%}
-  Every Single "Why"
+  Every Why
 {%- endcapture -%}
 {%- capture title_tail -%}
-  Your Child Comes Up With
+  Your Child Keeps Asking
 {%- endcapture -%}
 
 {%- capture intro -%}
-  Not homework. Not a reference book that gathers dust. The one children open on
-  their own — and keep reading long after you've said goodnight.
+  Not homework. Not a shelf ornament. The book children open on their own — and
+  won't put down.
 {%- endcapture -%}
 
 {%- comment -%}
@@ -142,7 +142,7 @@
     --pls-card:      #ffffff;     /* icon tiles + review card         */
     --pls-card-br:   #eceff4;     /* their hairline border            */
     --pls-star:      #f5a623;
-    --pls-max:       1180px;      /* content width                    */
+    --pls-max:       900px;       /* content width                    */
 
     --pls-pad-x:     clamp(0px, 2.2cqi, 24px);
     --pls-pad-y:     clamp(20px, 3.6cqi, 52px);
@@ -206,7 +206,7 @@
     border-radius: 999px;
     padding: clamp(7px, .75cqi, 11px) clamp(12px, 1.4cqi, 20px);
     font-size: 12px;
-    font-size: clamp(10.5px, 1.15cqi, 14px);
+    font-size: clamp(10.5px, 1.45cqi, 15px);
     font-weight: 800;
     letter-spacing: .06em;
     text-transform: uppercase;
@@ -221,9 +221,9 @@
 
   /* ---------- headline ---------- */
   .pls__title {
-    margin-top: clamp(14px, 1.9cqi, 26px);
+    margin-top: clamp(14px, 2.4cqi, 26px);
     font-size: 27px;
-    font-size: clamp(24px, 3.9cqi, 46px);
+    font-size: clamp(24px, 4.9cqi, 44px);
     line-height: 1.16;
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -233,6 +233,10 @@
     background: var(--pls-mark);
     border-radius: 4px;
     padding: .04em .3em .1em;
+    /* keep the highlighted phrase on one line — a short phrase splitting
+       across a line break reads as a mistake. Remove this if your phrase
+       is long enough that it needs to wrap. */
+    white-space: nowrap;
     /* keeps the highlight boxed correctly when the phrase wraps */
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
@@ -240,26 +244,25 @@
 
   /* ---------- intro ---------- */
   .pls__intro {
-    margin-top: clamp(14px, 1.9cqi, 26px);
+    margin-top: clamp(14px, 2.4cqi, 26px);
     font-size: 15px;
-    font-size: clamp(14.5px, 1.6cqi, 19px);
+    font-size: clamp(14.5px, 2.3cqi, 22px);
     line-height: 1.6;
     font-weight: 500;
     color: var(--pls-muted);
-    max-width: 62ch;
   }
 
   /* ---------- feature rows ---------- */
   .pls__features {
     display: flex;
     flex-direction: column;
-    gap: clamp(16px, 2.1cqi, 28px);
-    margin-top: clamp(20px, 2.9cqi, 40px);
+    gap: clamp(16px, 2.7cqi, 30px);
+    margin-top: clamp(20px, 3.7cqi, 42px);
   }
   .pls__feature {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: clamp(12px, 1.5cqi, 22px);
+    gap: clamp(12px, 2cqi, 22px);
     align-items: start;
   }
   .pls__icon {
@@ -268,31 +271,30 @@
     align-items: center;
     justify-content: center;
     width: 40px;  height: 40px;
-    width: clamp(36px, 3.7cqi, 50px);
-    height: clamp(36px, 3.7cqi, 50px);
+    width: clamp(38px, 5.4cqi, 56px);
+    height: clamp(38px, 5.4cqi, 56px);
     border-radius: 12px;
     background: var(--pls-card);
     border: 1px solid var(--pls-card-br);
     box-shadow: 0 1px 3px rgba(16, 26, 53, .05);
     font-size: 18px;
-    font-size: clamp(16px, 1.75cqi, 23px);
+    font-size: clamp(17px, 2.5cqi, 26px);
     line-height: 1;
   }
   .pls__ftext { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
   .pls__fhead {
     font-size: 16px;
-    font-size: clamp(15px, 1.5cqi, 19px);
+    font-size: clamp(15px, 2.1cqi, 21px);
     font-weight: 800;
     line-height: 1.3;
     color: var(--pls-ink);
   }
   .pls__fdesc {
     font-size: 14px;
-    font-size: clamp(13.5px, 1.35cqi, 17px);
+    font-size: clamp(13.5px, 1.8cqi, 18px);
     line-height: 1.5;
     font-weight: 500;
     color: var(--pls-muted);
-    max-width: 66ch;
   }
 
   /* ---------- review card ---------- */
@@ -300,24 +302,24 @@
     display: flex;
     flex-direction: column;
     gap: clamp(9px, 1.1cqi, 14px);
-    margin-top: clamp(22px, 3.2cqi, 44px);
+    margin-top: clamp(22px, 4cqi, 46px);
     background: var(--pls-card);
     border: 1px solid var(--pls-card-br);
     border-left: 4px solid var(--pls-accent);
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(16, 26, 53, .05);
-    padding: clamp(16px, 2.2cqi, 30px) clamp(16px, 2.4cqi, 34px);
+    padding: clamp(16px, 2.8cqi, 32px) clamp(16px, 3cqi, 36px);
   }
   .pls__stars {
     color: var(--pls-star);
     font-size: 15px;
-    font-size: clamp(14px, 1.5cqi, 19px);
+    font-size: clamp(14px, 2cqi, 21px);
     letter-spacing: 2px;
     line-height: 1;
   }
   .pls__quote {
     font-size: 15px;
-    font-size: clamp(14px, 1.5cqi, 19px);
+    font-size: clamp(14px, 2.05cqi, 20px);
     line-height: 1.6;
     font-style: italic;
     font-weight: 500;
@@ -325,7 +327,7 @@
   }
   .pls__by {
     font-size: 13.5px;
-    font-size: clamp(13px, 1.3cqi, 16px);
+    font-size: clamp(13px, 1.75cqi, 17px);
     font-weight: 700;
     color: var(--pls-muted);
   }
