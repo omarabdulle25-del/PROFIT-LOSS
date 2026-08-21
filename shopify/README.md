@@ -69,3 +69,18 @@ stacked stat cards whose numbers count up on scroll, and a source footnote.
   Reduced-motion users and browsers without IntersectionObserver also get the
   final numbers, never a zero.
 - Drop the `%` by deleting the `.prc__pct` span in the card markup.
+
+## `subjects-grid-custom-liquid.liquid`
+
+Dark band: eyebrow pill, centred headline with a highlighted phrase, sub-line
+and a grid of subject cards.
+
+**Customising**
+
+- Copy: the `capture` blocks. Cards are one block, fields split on `~~` and
+  cards on `||` (icon ~~ title ~~ description).
+- The grid is 4 columns above a 900px container, 2 above 520px, 1 below —
+  twelve cards divide evenly into all three, so no orphan rows.
+- Colours: the CSS variables at the top of `<style>`. The band paints its own
+  dark background, so set the section to full width with no padding in the
+  theme editor if you want it edge to edge.

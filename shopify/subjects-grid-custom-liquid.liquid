@@ -1,0 +1,262 @@
+{%- comment -%}
+  ===========================================================================
+  SUBJECTS GRID — paste into a "Custom Liquid" section in Shopify.
+  Dark band: eyebrow pill, centred headline with a highlighted phrase,
+  sub-line, and a grid of subject cards. Self-contained, styles scoped
+  under .pgs, sizes scale off the container.
+
+  The band paints its own dark background, so give the section full width
+  and zero padding in the theme editor if you want it edge to edge.
+
+  EDIT ME: the captures below. Everything else is layout.
+  ===========================================================================
+{%- endcomment -%}
+
+{%- capture eyebrow -%}
+  Everything inside
+{%- endcapture -%}
+
+{%- comment -%} Headline: the middle part gets the amber highlight. {%- endcomment -%}
+{%- capture title_lead -%}
+  One Book.
+{%- endcapture -%}
+{%- capture title_mark -%}
+  Every Subject
+{%- endcapture -%}
+{%- capture title_tail -%}
+  They're Curious About.
+{%- endcapture -%}
+
+{%- capture subtitle -%}
+  From the deepest ocean to the edge of the universe — if your child has wondered
+  about it, the answer is in here.
+{%- endcapture -%}
+
+{%- comment -%}
+  ---------- SUBJECT CARDS ----------
+  icon ~~ title ~~ description        (cards separated by || )
+  Add or remove cards freely — the grid reflows on its own.
+{%- endcomment -%}
+
+{%- capture card_data -%}
+  🚀 ~~ Space & Universe ~~ Black holes, planets, stars, rockets and life beyond Earth
+  ||
+  🦕 ~~ Dinosaurs ~~ Why they went extinct, how we find them, what they really looked like
+  ||
+  🧬 ~~ The Human Body ~~ Why your heart beats, how your brain works, why you dream
+  ||
+  🌊 ~~ Oceans & Sea Life ~~ Deep sea creatures, why the ocean is salty, how waves form
+  ||
+  ⚡ ~~ Weather & Nature ~~ Thunder, lightning, tornadoes, rainbows and the sky
+  ||
+  🏛️ ~~ History & Civilisations ~~ Ancient Egypt, the Romans, great inventions and how the world changed
+  ||
+  🦁 ~~ Animals & Wildlife ~~ How animals survive, migrate, communicate and why some go extinct
+  ||
+  🔬 ~~ Science & Physics ~~ Gravity, light, sound, electricity and how everything works
+  ||
+  🌿 ~~ Plants & Biology ~~ How plants grow, why leaves change colour, what makes things alive
+  ||
+  🧠 ~~ The Brain & Mind ~~ Memory, emotions, sleep, dreams and how the mind works
+  ||
+  ⚙️ ~~ Technology & Inventions ~~ How planes fly, how the internet works, what computers do
+  ||
+  🌍 ~~ Earth & Geography ~~ Volcanoes, earthquakes, tectonic plates and how Earth formed
+{%- endcapture -%}
+
+{%- assign card_rows = card_data | split: '||' -%}
+
+<div class="pgs">
+  <div class="pgs__inner">
+
+    {%- if eyebrow != blank -%}
+      <p class="pgs__eyebrow">
+        <span class="pgs__eyebrow-dot" aria-hidden="true"></span>
+        {{ eyebrow | strip }}
+      </p>
+    {%- endif -%}
+
+    <h2 class="pgs__title">
+      {{ title_lead | strip }}
+      <span class="pgs__mark">{{ title_mark | strip }}</span>
+      {{ title_tail | strip }}
+    </h2>
+
+    {%- if subtitle != blank -%}
+      <p class="pgs__sub">{{ subtitle | strip }}</p>
+    {%- endif -%}
+
+    <ul class="pgs__grid">
+      {%- for row in card_rows -%}
+        {%- assign f = row | split: '~~' -%}
+        {%- assign c_icon = f[0] | strip -%}
+        {%- assign c_head = f[1] | strip -%}
+        {%- assign c_desc = f[2] | strip -%}
+        <li class="pgs__card">
+          <span class="pgs__icon" aria-hidden="true">{{ c_icon }}</span>
+          <span class="pgs__head">{{ c_head }}</span>
+          {%- if c_desc != blank -%}
+            <span class="pgs__desc">{{ c_desc }}</span>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+
+  </div>
+</div>
+
+<style>
+  .pgs {
+    /* ---- TWEAK THE LOOK HERE ---- */
+    --pgs-bg:        #141f3d;  /* band background            */
+    --pgs-card:      #1b2749;  /* card fill                  */
+    --pgs-card-br:   rgba(255, 255, 255, .07);
+    --pgs-card-hov:  #24325c;  /* card fill on hover         */
+    --pgs-hov-br:    rgba(237, 176, 76, .45);
+    --pgs-ink:       #ffffff;  /* headings + card titles     */
+    --pgs-muted:     #a6b0c8;  /* sub-line + descriptions    */
+    --pgs-mark:      #edb04c;  /* headline highlight         */
+    --pgs-mark-ink:  #141f3d;  /* text on the highlight      */
+    --pgs-pill-bg:   #22305a;  /* eyebrow pill fill          */
+    --pgs-max:       1140px;   /* content width              */
+
+    --pgs-pad-x:     clamp(16px, 3cqi, 40px);
+    --pgs-pad-y:     clamp(32px, 5cqi, 72px);
+
+    /* sizes scale off this box, not the viewport */
+    container-type: inline-size;
+
+    background: var(--pgs-bg);
+    color: var(--pgs-ink);
+    font-family: inherit;
+    padding: 40px 20px;
+    padding: var(--pgs-pad-y) var(--pgs-pad-x);
+    -webkit-font-smoothing: antialiased;
+  }
+  .pgs *,
+  .pgs *::before,
+  .pgs *::after { box-sizing: border-box; }
+
+  /* Themes style bare elements — :where() keeps these at zero specificity
+     so the component rules below always win. */
+  .pgs :where(ul) { list-style: none; margin: 0; padding: 0; }
+  .pgs :where(h2, p, li) { margin: 0; }
+
+  .pgs__inner {
+    max-width: var(--pgs-max);
+    margin: 0 auto;
+    container-type: inline-size;
+    text-align: center;
+  }
+
+  /* ---------- header ---------- */
+  .pgs__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--pgs-pill-bg);
+    color: var(--pgs-mark);
+    border-radius: 999px;
+    padding: clamp(6px, .7cqi, 10px) clamp(12px, 1.3cqi, 18px);
+    font-size: 11.5px;
+    font-size: clamp(10px, 1.1cqi, 13px);
+    font-weight: 800;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    line-height: 1.25;
+  }
+  .pgs__eyebrow-dot {
+    flex: 0 0 auto;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .pgs__title {
+    margin-top: clamp(12px, 1.7cqi, 22px);
+    font-size: 27px;
+    font-size: clamp(24px, 3.6cqi, 42px);
+    line-height: 1.18;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--pgs-ink);
+    text-wrap: balance;
+  }
+  .pgs__mark {
+    background: var(--pgs-mark);
+    color: var(--pgs-mark-ink);
+    border-radius: 4px;
+    padding: .04em .28em .1em;
+    /* a short highlight splitting across lines reads as a mistake */
+    white-space: nowrap;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .pgs__sub {
+    max-width: 46em;
+    margin: clamp(12px, 1.7cqi, 20px) auto 0;
+    font-size: 15px;
+    font-size: clamp(14px, 1.5cqi, 18px);
+    line-height: 1.6;
+    font-weight: 500;
+    color: var(--pgs-muted);
+  }
+
+  /* ---------- card grid ---------- */
+  .pgs__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(12px, 1.4cqi, 18px);
+    margin-top: clamp(24px, 3.4cqi, 44px);
+    text-align: left;
+  }
+  /* 12 cards divide evenly into 1, 2 and 4 columns — no orphan rows */
+  @container (min-width: 520px) {
+    .pgs__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @container (min-width: 900px) {
+    .pgs__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  .pgs__card {
+    display: flex;
+    flex-direction: column;
+    background: var(--pgs-card);
+    border: 1px solid var(--pgs-card-br);
+    border-radius: 14px;
+    padding: clamp(16px, 1.9cqi, 24px);
+    transition: background .18s ease, border-color .18s ease, transform .18s ease;
+  }
+  @media (hover: hover) {
+    .pgs__card:hover {
+      background: var(--pgs-card-hov);
+      border-color: var(--pgs-hov-br);
+      transform: translateY(-2px);
+    }
+  }
+  .pgs__icon {
+    font-size: 21px;
+    font-size: clamp(19px, 1.9cqi, 24px);
+    line-height: 1;
+  }
+  .pgs__head {
+    margin-top: clamp(12px, 1.5cqi, 20px);
+    font-size: 15.5px;
+    font-size: clamp(15px, 1.5cqi, 18px);
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--pgs-ink);
+  }
+  .pgs__desc {
+    margin-top: 6px;
+    font-size: 13.5px;
+    font-size: clamp(13px, 1.25cqi, 15.5px);
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--pgs-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pgs__card { transition: none; }
+    .pgs__card:hover { transform: none; }
+  }
+</style>
