@@ -24,3 +24,20 @@ Styles live under the `.plh` namespace so they can't collide with the theme.
 
 Sizing is fluid (`clamp()`), so it scales from ~320px phones up to wide desktop
 without extra breakpoints.
+
+## `proof-stats-custom-liquid.liquid`
+
+Social-proof section: image on one side, survey stats on the other, footnote
+underneath. Same install path as above (Custom Liquid section).
+
+**Customising**
+
+- Copy: the `capture` blocks at the top. Stats are one block, fields split on
+  `~~` and rows split on `||` — add or remove rows freely.
+- Image: paste a Shopify Files URL into `image_url`. Left empty it falls back
+  to the product's featured image; with neither, the stats run full width.
+- `--plx-ratio` sets the image shape (`1 / 1` default, `4 / 5` for tall).
+- Colours and widths: the CSS variables at the top of `<style>`.
+
+The columns sit side by side once the section is at least 760px wide and stack
+below that, measured on the section itself rather than the viewport.

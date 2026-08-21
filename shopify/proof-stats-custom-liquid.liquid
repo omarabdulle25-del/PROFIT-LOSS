@@ -1,0 +1,286 @@
+{%- comment -%}
+  ===========================================================================
+  PROOF STATS BLOCK — paste into a "Custom Liquid" section in Shopify.
+  Image on the left, survey stats on the right, footnote underneath.
+  Self-contained: all styles scoped under .plx, sizes scale off the
+  container so it fits a full-width section or a narrower column.
+
+  EDIT ME: the settings below. Everything else is layout.
+  ===========================================================================
+{%- endcomment -%}
+
+{%- liquid
+  # ---------- IMAGE ----------
+  # Paste a URL from Shopify admin → Settings → Files. Leave it empty and the
+  # block falls back to the product's featured image; with neither, the stats
+  # simply run full width.
+  assign image_url = ''
+  assign image_alt = 'Child reading the 10,000 Whys encyclopedia'
+
+  if image_url == blank and product != blank and product.featured_image != blank
+    assign image_url = product.featured_image | image_url: width: 1200
+    assign image_alt = product.featured_image.alt | default: product.title
+  endif
+-%}
+
+{%- capture eyebrow -%}
+  Why 18,000+ families keep it on the table
+{%- endcapture -%}
+
+{%- capture title_lead -%}
+  What 18,000+ Families
+{%- endcapture -%}
+
+{%- capture title_accent -%}
+  Notice First
+{%- endcapture -%}
+
+{%- comment -%}
+  ---------- STATS ----------
+  One stat per block: number ~~ headline ~~ description
+  Blocks are separated by ||
+{%- endcomment -%}
+
+{%- capture stat_data -%}
+  94% ~~ More Questions, Not Fewer ~~
+  94% of parents said their child began asking deeper questions within three weeks*
+  ||
+  91% ~~ Chosen Over A Screen ~~
+  91% saw their child reach for the book instead of a tablet at least once a week*
+  ||
+  89% ~~ Noticed At School ~~
+  89% reported stronger vocabulary, focus or class participation*
+  ||
+  87% ~~ Bought Again As A Gift ~~
+  87% said they would buy another copy for a friend's child*
+{%- endcapture -%}
+
+{%- capture footnote -%}
+  * Based on a survey of verified customers. Individual results vary.
+{%- endcapture -%}
+
+{%- assign stat_rows = stat_data | split: '||' -%}
+
+<div class="plx">
+  <div class="plx__inner">
+
+    {%- if image_url != blank -%}
+      <div class="plx__media">
+        <img class="plx__img" src="{{ image_url }}" alt="{{ image_alt | strip }}"
+             width="1200" height="1200" loading="lazy">
+      </div>
+    {%- endif -%}
+
+    <div class="plx__body">
+      {%- if eyebrow != blank -%}
+        <p class="plx__eyebrow">
+          <span class="plx__eyebrow-dot" aria-hidden="true"></span>
+          {{ eyebrow | strip }}
+        </p>
+      {%- endif -%}
+
+      <h2 class="plx__title">
+        {{ title_lead | strip }}
+        <span class="plx__title-accent">{{ title_accent | strip }}</span>
+      </h2>
+
+      <ul class="plx__stats">
+        {%- for row in stat_rows -%}
+          {%- assign f = row | split: '~~' -%}
+          {%- assign s_num   = f[0] | strip -%}
+          {%- assign s_head  = f[1] | strip -%}
+          {%- assign s_desc  = f[2] | strip -%}
+          <li class="plx__stat">
+            <span class="plx__num">{{ s_num }}</span>
+            <span class="plx__text">
+              <span class="plx__stat-head">{{ s_head }}</span>
+              {%- if s_desc != blank -%}
+                <span class="plx__stat-desc">{{ s_desc }}</span>
+              {%- endif -%}
+            </span>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if footnote != blank -%}
+        <p class="plx__note">
+          <span class="plx__note-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" width="12" height="12" fill="none">
+              <circle cx="10" cy="10" r="8.6" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M10 8.6v5M10 5.9v.1" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round"/>
+            </svg>
+          </span>
+          {{ footnote | strip }}
+        </p>
+      {%- endif -%}
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .plx {
+    /* ---- TWEAK THE LOOK HERE ---- */
+    --plx-bg:       transparent; /* section surface                   */
+    --plx-ink:      #101a35;     /* headings + numbers                */
+    --plx-muted:    #6b7482;     /* descriptions                      */
+    --plx-accent:   #b23a29;     /* highlighted half of the headline  */
+    --plx-green-bg: #dff3e4;     /* eyebrow pill fill                 */
+    --plx-green-ink:#17694a;     /* eyebrow pill text                 */
+    --plx-rule:     #e7ebf1;     /* hairlines                         */
+    --plx-note-bg:  #eef1f5;     /* footnote bar                      */
+    --plx-max:      1180px;      /* content width                     */
+    --plx-ratio:    1 / 1;       /* image shape, e.g. 4 / 5 for tall  */
+
+    --plx-pad-x:    clamp(0px, 2.2cqi, 24px);
+    --plx-pad-y:    clamp(20px, 4cqi, 56px);
+
+    /* Sizes scale off this box, not the viewport */
+    container-type: inline-size;
+
+    background: var(--plx-bg);
+    color: var(--plx-ink);
+    font-family: inherit;
+    padding: 28px 16px;
+    padding: var(--plx-pad-y) var(--plx-pad-x);
+    -webkit-font-smoothing: antialiased;
+  }
+  .plx *,
+  .plx *::before,
+  .plx *::after { box-sizing: border-box; }
+
+  /* themes style bare list/heading elements — neutralise that */
+  .plx ul { list-style: none; margin: 0; padding: 0; }
+  .plx h2, .plx p, .plx li { margin: 0; }
+  .plx img { display: block; max-width: 100%; height: auto; }
+
+  .plx__inner {
+    max-width: var(--plx-max);
+    margin: 0 auto;
+    display: grid;
+    gap: 22px;
+    gap: clamp(20px, 4cqi, 52px);
+  }
+  /* side by side once there is room; stacked below that */
+  @container (min-width: 760px) {
+    .plx__inner {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      align-items: center;
+    }
+  }
+
+  .plx__img {
+    width: 100%;
+    /* height:auto is required — the img height attribute would otherwise
+       win over aspect-ratio and stretch the image */
+    height: auto;
+    aspect-ratio: var(--plx-ratio);
+    object-fit: cover;
+    border-radius: 12px;
+    background: #eef1f5;
+  }
+
+  /* the text column is its own container, so type sizes off the column
+     width rather than the whole section */
+  .plx__body { container-type: inline-size; }
+
+  .plx__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--plx-green-bg);
+    color: var(--plx-green-ink);
+    border-radius: 999px;
+    padding: 7px 14px;
+    padding: clamp(6px, 1.4cqi, 10px) clamp(11px, 2.4cqi, 18px);
+    font-size: 11.5px;
+    font-size: clamp(10.5px, 2cqi, 13px);
+    font-weight: 800;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    line-height: 1.25;
+  }
+  .plx__eyebrow-dot {
+    flex: 0 0 auto;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .plx__title {
+    margin-top: 14px;
+    margin-top: clamp(12px, 2.6cqi, 22px);
+    font-size: 26px;
+    font-size: clamp(22px, 5cqi, 40px);
+    line-height: 1.14;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--plx-ink);
+  }
+  .plx__title-accent { color: var(--plx-accent); }
+
+  .plx__stats {
+    margin-top: 18px;
+    margin-top: clamp(16px, 3.2cqi, 30px);
+    border-top: 1px solid var(--plx-rule);
+  }
+  .plx__stat {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: 14px;
+    gap: clamp(12px, 2.6cqi, 24px);
+    padding: 12px 0;
+    padding: clamp(11px, 2.2cqi, 20px) 0;
+    border-bottom: 1px solid var(--plx-rule);
+  }
+  .plx__num {
+    min-width: 62px;
+    min-width: clamp(54px, 11.5cqi, 92px);
+    font-size: 27px;
+    font-size: clamp(24px, 5.6cqi, 42px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--plx-ink);
+  }
+  .plx__text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .plx__stat-head {
+    font-size: 15px;
+    font-size: clamp(14px, 2.5cqi, 19px);
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--plx-ink);
+  }
+  .plx__stat-desc {
+    font-size: 13px;
+    font-size: clamp(12.5px, 2.2cqi, 16px);
+    line-height: 1.45;
+    font-weight: 500;
+    color: var(--plx-muted);
+  }
+
+  .plx__note {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-top: 16px;
+    margin-top: clamp(14px, 2.8cqi, 24px);
+    background: var(--plx-note-bg);
+    border-radius: 8px;
+    padding: 11px 13px;
+    padding: clamp(10px, 2cqi, 16px) clamp(11px, 2.2cqi, 18px);
+    font-size: 12px;
+    font-size: clamp(11.5px, 2.1cqi, 14px);
+    line-height: 1.45;
+    font-weight: 500;
+    color: var(--plx-muted);
+  }
+  .plx__note-icon {
+    flex: 0 0 auto;
+    display: inline-flex;
+    margin-top: 1px;
+    color: var(--plx-accent);
+  }
+</style>
